@@ -1,6 +1,6 @@
 "use client";
 
-import ThemeContext from "@/context/ThemeContext";
+import ThemeContext from "@/_context/ThemeContext";
 import { CacheProvider } from "@emotion/react";
 import {
   CssBaseline,

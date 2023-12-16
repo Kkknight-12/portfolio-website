@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import { useTheme } from "@mui/material/styles";
 import * as React from "react";
-import ThemeContext from "../../../context/ThemeContext";
+import ThemeContext from "../../../_context/ThemeContext";
 
 export function ModeSwitchButton() {
   const theme = useTheme();

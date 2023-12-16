@@ -1,6 +1,6 @@
 "use client";
 
-import ThemeContext from "@/context/ThemeContext";
+import ThemeContext from "@/_context/ThemeContext";
 import { PaletteMode } from "@mui/material";
 import * as React from "react";
 import { ReactNode } from "react";
