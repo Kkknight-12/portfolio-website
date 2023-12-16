@@ -1,5 +1,5 @@
 import Navbar from "@/components/Navbar";
-import { SettingContext } from "@/context/ThemeContext";
+import { SettingContext } from "@/context/SettingContext";
 import MuiThemeProvider from "@/theme";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
