@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import Head from "next/head";
 // @mui
 import { Box, styled } from "@mui/system";
+import { ComponentType, PropsWithChildren, Ref, ReactNode } from "react";
 
 const StyledBox = styled(Box)({
   // Add other common styles as needed
@@ -27,8 +28,15 @@ const StyledBox = styled(Box)({
 //
 // export default Page;
 
-const Page = (Component) => {
-  const WithPageStyles = (props, ref) => (
+type ComponentProps = {
+  children?: ReactNode;
+};
+
+const Page = (Component: ComponentType<ComponentProps>) => {
+  const WithPageStyles = (
+    props: PropsWithChildren<ComponentProps>,
+    ref: Ref<any>
+  ) => (
     <StyledBox ref={ref} {...props}>
       <Component {...props} />
     </StyledBox>

@@ -11,8 +11,13 @@ import { createTheme } from "@mui/material";
 import { amber, grey } from "@mui/material/colors";
 import { cache } from "@/app/createEmotionCache";
 import React from "react";
+import { ReactNode } from "react";
 
-export default function Theme({ children }) {
+type ThemeProps = {
+  children: ReactNode;
+};
+
+export default function Theme({ children }: ThemeProps) {
   const { mode } = React.useContext(ThemeContext);
 
   const theme = React.useMemo(

@@ -21,7 +21,11 @@ function StepIcon() {
   return <div />;
 }
 
-const JobDetail = ({ period, location }) => {
+type JobDetailProps = {
+  period: string;
+  location: string;
+};
+const JobDetail: React.FC<JobDetailProps> = ({ period, location }) => {
   return (
     <Stack direction={"row"} justifyContent={"space-between"}>
       <Typography> Location: {location} </Typography>
@@ -118,10 +122,9 @@ export default function VerticalLinearStepper() {
   const [activeStep, setActiveStep] = React.useState(0);
   const theme = useTheme();
   console.log("theme )) ", theme.palette);
-  const setCurrent = (id) => {
+  const setCurrent = (id: number) => {
     setActiveStep(id);
   };
-
   return (
     <Box sx={{ maxWidth: 500 }}>
       <Stepper activeStep={activeStep} orientation="vertical" nonLinear>
@@ -156,10 +159,10 @@ export default function VerticalLinearStepper() {
 
                 {step.description.map((data) => {
                   return (
-                    <Box key={data.id}>
+                    <Box key={data.heading}>
                       <Typography variant="h6">{data.heading}</Typography>
                       {data.content.map((content) => (
-                        <ListItem>
+                        <ListItem key={content.detail}>
                           <ListItemIcon sx={{ fontSize: "small" }}>
                             <CircleIcon />
                           </ListItemIcon>
