@@ -9,7 +9,7 @@ import React from "react";
 
 function HomePage() {
   const theme = useTheme();
-  console.log("theme ", theme.palette.mode);
+
   return (
     // <div
     //   className='flex flex-col items-center justify-between p-24 '

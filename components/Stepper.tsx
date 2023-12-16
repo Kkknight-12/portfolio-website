@@ -34,23 +34,6 @@ const JobDetail: React.FC<JobDetailProps> = ({ period, location }) => {
   );
 };
 
-const CustomButton = styled(Button)(({ theme }) => ({
-  backgroundColor:
-    theme.palette.mode === "dark"
-      ? theme.palette.primary.main
-      : theme.palette.secondary.main,
-  color:
-    theme.palette.mode === "dark"
-      ? theme.palette.common.white
-      : theme.palette.common.black,
-  "&:hover": {
-    backgroundColor:
-      theme.palette.mode === "dark"
-        ? theme.palette.primary.light
-        : theme.palette.secondary.light,
-  },
-}));
-
 const steps = [
   {
     id: 0,
@@ -121,7 +104,7 @@ const steps = [
 export default function VerticalLinearStepper() {
   const [activeStep, setActiveStep] = React.useState(0);
   const theme = useTheme();
-  console.log("theme )) ", theme.palette);
+
   const setCurrent = (id: number) => {
     setActiveStep(id);
   };
