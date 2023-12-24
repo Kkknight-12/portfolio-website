@@ -1,63 +1,88 @@
 "use client";
-
 import Page from "@/components/ComponentWrapper";
 import VerticalLinearStepper from "@/components/Stepper";
-import { useTheme } from "@mui/material/styles";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { amber, green } from "@mui/material/colors";
+import { useTheme } from "@mui/material/styles";
 import React from "react";
 
 function HomePage() {
   const theme = useTheme();
+  const color = theme.palette.mode === "dark" ? green[500] : amber[900];
+
+  // const StyledTypography = ({ children, ...props }) => (
+  //   <Typography
+  //     style={{
+  //       display: "inline-block",
+  //       fontSize: "24px",
+  //       color: props.color,
+  //       padding: "5px",
+  //     }}
+  //   >
+  //     {children}
+  //   </Typography>
+  // );
 
   return (
-    // <div
-    //   className='flex flex-col items-center justify-between p-24 '
-    // >
     <Box
       sx={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
-        // bgcolor: "background.default",
         color: "text.primary",
         p: 3,
         gap: 15,
-        minHeight: "100vh",
       }}
     >
       <Stack alignItems={"center"} justifyContent={"center"} gap={5}>
-        <Stack alignItems={"center"} justifyContent={"center"} gap={2}>
+        <Stack
+          alignItems={"center"}
+          justifyContent={"center"}
+          sx={{ textAlign: "center" }}
+          gap={2}
+        >
           <p className="text-6xl ">Mayank Sarasiya</p>
           <p className="text-4xl ">Frontend Developer</p>
         </Stack>
 
-        <Stack alignItems={"center"} justifyContent={"center"} gap={1}>
-          <Typography>
-            I have 2 year of experience as a Frontend Developer
-          </Typography>
+        <Stack
+          alignItems={"center"}
+          justifyContent={"center"}
+          gap={1}
+          sx={{ textAlign: "justify" }}
+        >
+          <p className="text-xl">
+            I have{" "}
+            <span className="text-xl inline-block font-bold"> 2 year </span> of
+            experience as a{" "}
+            <span className="text-xl inline-block font-bold">
+              Frontend Developer
+            </span>
+          </p>
 
           <Stack
             direction={"row"}
             alignItems={"center"}
-            justifyContent={"center"}
-            gap={1}
+            justifyContent={"start"}
+            sx={{ textAlign: "justify" }}
+            gap={{ xs: 4, sm: 1 }}
           >
-            <Typography>My stack is</Typography>
-            <Typography
+            <p className="text-base ">
+              <strong>My stack</strong>
+            </p>
+            <p
               style={{
-                color: theme.palette.mode === "dark" ? green[500] : amber[900],
+                color,
               }}
+              className="text-xl text-left"
             >
               Javascript, React, Next, Svelte, Mui, Tailwind
-            </Typography>
+            </p>
           </Stack>
         </Stack>
       </Stack>
       <VerticalLinearStepper />
     </Box>
-    // </div>
   );
 }
 

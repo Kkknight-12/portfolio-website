@@ -1,10 +1,13 @@
-import { forwardRef } from "react";
-import PropTypes from "prop-types";
-// next
-import Head from "next/head";
 // @mui
 import { Box, styled } from "@mui/system";
-import { ComponentType, PropsWithChildren, Ref, ReactNode } from "react";
+// next
+import {
+  ComponentType,
+  forwardRef,
+  PropsWithChildren,
+  ReactNode,
+  Ref,
+} from "react";
 
 const StyledBox = styled(Box)({
   // Add other common styles as needed
@@ -16,6 +19,8 @@ const StyledBox = styled(Box)({
   // color: "text.primary",
   // p: 3,
   // gap: 15,
+  paddingTop: "40px",
+  minHeight: "calc(100vh - 88px)",
 });
 
 // const Page = forwardRef(({ Component, ...other }, ref) => (

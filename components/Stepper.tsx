@@ -15,7 +15,6 @@ import StepLabel from "@mui/material/StepLabel";
 import Stepper from "@mui/material/Stepper";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
-import { styled } from "@mui/system";
 
 function StepIcon() {
   return <div />;
@@ -27,7 +26,14 @@ type JobDetailProps = {
 };
 const JobDetail: React.FC<JobDetailProps> = ({ period, location }) => {
   return (
-    <Stack direction={"row"} justifyContent={"space-between"}>
+    <Stack
+      direction={"column"}
+      justifyContent={"space-between"}
+      sx={{
+        flexDirection: { sm: "row" },
+        gap: { xs: 1 },
+      }}
+    >
       <Typography> Location: {location} </Typography>
       <Typography> {period} </Typography>
     </Stack>
@@ -146,7 +152,12 @@ export default function VerticalLinearStepper() {
                       <Typography variant="h6">{data.heading}</Typography>
                       {data.content.map((content) => (
                         <ListItem key={content.detail}>
-                          <ListItemIcon sx={{ fontSize: "small" }}>
+                          <ListItemIcon
+                            sx={{
+                              fontSize: "small",
+                              display: { xs: "none", sm: "block" },
+                            }}
+                          >
                             <CircleIcon />
                           </ListItemIcon>
                           <ListItemText>
