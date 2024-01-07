@@ -1,62 +1,62 @@
-import CircleIcon from "@mui/icons-material/Circle";
+import CircleIcon from '@mui/icons-material/Circle'
 import {
   ListItem,
   ListItemIcon,
   ListItemText,
   Stack,
   useTheme,
-} from "@mui/material";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import { amber, green } from "@mui/material/colors";
-import Step from "@mui/material/Step";
-import StepContent from "@mui/material/StepContent";
-import StepLabel from "@mui/material/StepLabel";
-import Stepper from "@mui/material/Stepper";
-import Typography from "@mui/material/Typography";
-import * as React from "react";
+} from '@mui/material'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import { amber, green } from '@mui/material/colors'
+import Step from '@mui/material/Step'
+import StepContent from '@mui/material/StepContent'
+import StepLabel from '@mui/material/StepLabel'
+import Stepper from '@mui/material/Stepper'
+import Typography from '@mui/material/Typography'
+import * as React from 'react'
 
 function StepIcon() {
-  return <div />;
+  return <div />
 }
 
 type JobDetailProps = {
-  period: string;
-  location: string;
-};
+  period: string
+  location: string
+}
 const JobDetail: React.FC<JobDetailProps> = ({ period, location }) => {
   return (
     <Stack
-      direction={"column"}
-      justifyContent={"space-between"}
+      direction={'column'}
+      justifyContent={'space-between'}
       sx={{
-        flexDirection: { sm: "row" },
+        flexDirection: { sm: 'row' },
         gap: { xs: 1 },
       }}
     >
       <Typography> Location: {location} </Typography>
       <Typography> {period} </Typography>
     </Stack>
-  );
-};
+  )
+}
 
 const steps = [
   {
     id: 0,
-    label: "TechStuff Pvt Ltd",
+    label: 'TechStuff Pvt Ltd',
     jobDetail: (
       <JobDetail
-        location={"Indore ( Remote Job )"}
-        period={"2021 Nov - Present"}
+        location={'Indore ( Remote Job )'}
+        period={'2022 Nov - Present'}
       />
     ),
     description: [
       {
-        heading: "Application Development & Coding",
+        heading: 'Application Development & Coding',
         content: [
           {
             detail:
-              "I have successfully delivered robust and scalable React applications, effectively collaborating with cross-functional teams and adhering to project deadlines.",
+              'I have successfully delivered robust and scalable React applications, effectively collaborating with cross-functional teams and adhering to project deadlines.',
             link: [],
           },
         ],
@@ -65,55 +65,55 @@ const steps = [
   },
   {
     id: 1,
-    label: "Mindnerves Pvt Ltd",
-    period: "2023 April  - 2022 April",
+    label: 'Mindnerves Pvt Ltd',
+    period: '2023 April  - 2022 April',
     jobDetail: (
       <JobDetail
-        location={"Pune ( Remote Job )"}
-        period={"2023 April  - 2022 April"}
+        location={'Pune ( Remote Job )'}
+        period={'2023 April  - 2022 April'}
       />
     ),
     description: [
       {
-        heading: "Application Development & Coding",
+        heading: 'Application Development & Coding',
         content: [
           {
             detail:
-              "Creatied tools and applications by producing clean & efficient code and supervising code testing & debugging.",
+              'Creatied tools and applications by producing clean & efficient code and supervising code testing & debugging.',
             link: [
-              "https://compliancesutra.com/#/ ",
-              "https://devvisn-customer.web.app/",
+              'https://compliancesutra.com/#/ ',
+              'https://devvisn-customer.web.app/',
             ],
           },
         ],
       },
 
       {
-        heading: "Stakeholder Management & System Improvement",
+        heading: 'Stakeholder Management & System Improvement',
         content: [
           {
             detail:
-              "Collaborating with vendors and cross-functional teams to fix & improve products. ",
-            link: ["https://compliancesutra.com/#/"],
+              'Collaborating with vendors and cross-functional teams to fix & improve products. ',
+            link: ['https://compliancesutra.com/#/'],
           },
           {
             detail:
-              "Documented development phases & monitoring systems and ensuring software is up-to-date with the latest technologies. ",
-            link: [" http://b2b.adorn.digital/"],
+              'Documented development phases & monitoring systems and ensuring software is up-to-date with the latest technologies. ',
+            link: [' http://b2b.adorn.digital/'],
           },
         ],
       },
     ],
   },
-];
+]
 
 export default function VerticalLinearStepper() {
-  const [activeStep, setActiveStep] = React.useState(0);
-  const theme = useTheme();
+  const [activeStep, setActiveStep] = React.useState(0)
+  const theme = useTheme()
 
   const setCurrent = (id: number) => {
-    setActiveStep(id);
-  };
+    setActiveStep(id)
+  }
   return (
     <Box sx={{ maxWidth: 500 }}>
       <Stepper activeStep={activeStep} orientation="vertical" nonLinear>
@@ -127,10 +127,10 @@ export default function VerticalLinearStepper() {
                   mt: 1,
                   mr: 1,
                   backgroundColor:
-                    theme.palette.mode === "dark" ? green[700] : amber[700],
-                  "&:hover": {
+                    theme.palette.mode === 'dark' ? green[700] : amber[700],
+                  '&:hover': {
                     backgroundColor:
-                      theme.palette.mode === "dark" ? green[500] : amber[900],
+                      theme.palette.mode === 'dark' ? green[500] : amber[900],
                   },
                 }}
                 // style={{
@@ -154,8 +154,8 @@ export default function VerticalLinearStepper() {
                         <ListItem key={content.detail}>
                           <ListItemIcon
                             sx={{
-                              fontSize: "small",
-                              display: { xs: "none", sm: "block" },
+                              fontSize: 'small',
+                              display: { xs: 'none', sm: 'block' },
                             }}
                           >
                             <CircleIcon />
@@ -164,7 +164,7 @@ export default function VerticalLinearStepper() {
                             <Typography variant="body1">
                               {content.detail}
                             </Typography>
-                            <Stack direction={"column"}>
+                            <Stack direction={'column'}>
                               {content.link.map((link, linkIndex) => (
                                 <React.Fragment key={linkIndex}>
                                   <a
@@ -181,7 +181,7 @@ export default function VerticalLinearStepper() {
                         </ListItem>
                       ))}
                     </Box>
-                  );
+                  )
                 })}
               </Stack>
             </StepContent>
@@ -189,5 +189,5 @@ export default function VerticalLinearStepper() {
         ))}
       </Stepper>
     </Box>
-  );
+  )
 }
