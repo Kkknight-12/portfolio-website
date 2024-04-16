@@ -1,5 +1,5 @@
 // @mui
-import { Box, styled } from "@mui/system";
+import { Box, styled } from '@mui/system'
 // next
 import {
   ComponentType,
@@ -7,21 +7,21 @@ import {
   PropsWithChildren,
   ReactNode,
   Ref,
-} from "react";
+} from 'react'
 
-const StyledBox = styled(Box)({
-  // Add other common styles as needed
-  // display: "flex",
-  // flexDirection: "column",
-  // alignItems: "center",
-  // justifyContent: "center",
-  // bgcolor: "background.default",
-  // color: "text.primary",
-  // p: 3,
-  // gap: 15,
-  paddingTop: "40px",
-  minHeight: "calc(100vh - 88px)",
-});
+// const StyledBox = styled(Box)({
+// Add other common styles as needed
+// display: "flex",
+// flexDirection: "column",
+// alignItems: "center",
+// justifyContent: "center",
+// bgcolor: "background.default",
+// color: "text.primary",
+// p: 3,
+// gap: 15,
+//   paddingTop: '40px',
+//   minHeight: 'calc(100vh - 88px)',
+// })
 
 // const Page = forwardRef(({ Component, ...other }, ref) => (
 //   <>
@@ -34,20 +34,20 @@ const StyledBox = styled(Box)({
 // export default Page;
 
 type ComponentProps = {
-  children?: ReactNode;
-};
+  children?: ReactNode
+}
 
 const Page = (Component: ComponentType<ComponentProps>) => {
   const WithPageStyles = (
     props: PropsWithChildren<ComponentProps>,
-    ref: Ref<any>
+    ref: Ref<any>,
   ) => (
-    <StyledBox ref={ref} {...props}>
+    <Box className="pt-10 min-h-[100vh-88px]" ref={ref}>
       <Component {...props} />
-    </StyledBox>
-  );
+    </Box>
+  )
 
-  return forwardRef(WithPageStyles);
-};
+  return forwardRef(WithPageStyles)
+}
 
-export default Page;
+export default Page

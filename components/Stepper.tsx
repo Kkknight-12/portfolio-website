@@ -1,3 +1,4 @@
+import { steps } from '@/constant'
 import CircleIcon from '@mui/icons-material/Circle'
 import {
   ListItem,
@@ -13,99 +14,14 @@ import Step from '@mui/material/Step'
 import StepContent from '@mui/material/StepContent'
 import StepLabel from '@mui/material/StepLabel'
 import Stepper from '@mui/material/Stepper'
-import Typography from '@mui/material/Typography'
+import { Arima } from 'next/font/google'
 import * as React from 'react'
+
+const arima = Arima({ subsets: ['latin'] })
 
 function StepIcon() {
   return <div />
 }
-
-type JobDetailProps = {
-  period: string
-  location: string
-}
-const JobDetail: React.FC<JobDetailProps> = ({ period, location }) => {
-  return (
-    <Stack
-      direction={'column'}
-      justifyContent={'space-between'}
-      sx={{
-        flexDirection: { sm: 'row' },
-        gap: { xs: 1 },
-      }}
-    >
-      <Typography> Location: {location} </Typography>
-      <Typography> {period} </Typography>
-    </Stack>
-  )
-}
-
-const steps = [
-  {
-    id: 0,
-    label: 'TechStuff Pvt Ltd',
-    jobDetail: (
-      <JobDetail
-        location={'Indore ( Remote Job )'}
-        period={'2022 Nov - Present'}
-      />
-    ),
-    description: [
-      {
-        heading: 'Application Development & Coding',
-        content: [
-          {
-            detail:
-              'I have successfully delivered robust and scalable React applications, effectively collaborating with cross-functional teams and adhering to project deadlines.',
-            link: [],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: 1,
-    label: 'Mindnerves Pvt Ltd',
-    period: '2023 April  - 2022 April',
-    jobDetail: (
-      <JobDetail
-        location={'Pune ( Remote Job )'}
-        period={'2023 April  - 2022 April'}
-      />
-    ),
-    description: [
-      {
-        heading: 'Application Development & Coding',
-        content: [
-          {
-            detail:
-              'Creatied tools and applications by producing clean & efficient code and supervising code testing & debugging.',
-            link: [
-              'https://compliancesutra.com/#/ ',
-              'https://devvisn-customer.web.app/',
-            ],
-          },
-        ],
-      },
-
-      {
-        heading: 'Stakeholder Management & System Improvement',
-        content: [
-          {
-            detail:
-              'Collaborating with vendors and cross-functional teams to fix & improve products. ',
-            link: ['https://compliancesutra.com/#/'],
-          },
-          {
-            detail:
-              'Documented development phases & monitoring systems and ensuring software is up-to-date with the latest technologies. ',
-            link: [' http://b2b.adorn.digital/'],
-          },
-        ],
-      },
-    ],
-  },
-]
 
 export default function VerticalLinearStepper() {
   const [activeStep, setActiveStep] = React.useState(0)
@@ -144,12 +60,12 @@ export default function VerticalLinearStepper() {
             </StepLabel>
             <StepContent>
               <Stack gap={2} paddingBlock={2}>
-                <Box>{step.jobDetail}</Box>
+                <div>{step.jobDetail}</div>
 
                 {step.description.map((data) => {
                   return (
                     <Box key={data.heading}>
-                      <Typography variant="h6">{data.heading}</Typography>
+                      <p className=" tracking-wide">{data.heading}</p>
                       {data.content.map((content) => (
                         <ListItem key={content.detail}>
                           <ListItemIcon
@@ -161,9 +77,11 @@ export default function VerticalLinearStepper() {
                             <CircleIcon />
                           </ListItemIcon>
                           <ListItemText>
-                            <Typography variant="body1">
+                            <p
+                              className={`${arima.className} !font-arima tracking-wide`}
+                            >
                               {content.detail}
-                            </Typography>
+                            </p>
                             <Stack direction={'column'}>
                               {content.link.map((link, linkIndex) => (
                                 <React.Fragment key={linkIndex}>
