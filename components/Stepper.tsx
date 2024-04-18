@@ -1,15 +1,8 @@
 import { steps } from '@/constant'
 import CircleIcon from '@mui/icons-material/Circle'
-import {
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Stack,
-  useTheme,
-} from '@mui/material'
+import { ListItem, ListItemIcon, ListItemText, Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import { amber, green } from '@mui/material/colors'
 import Step from '@mui/material/Step'
 import StepContent from '@mui/material/StepContent'
 import StepLabel from '@mui/material/StepLabel'
@@ -23,9 +16,8 @@ function StepIcon() {
   return <div />
 }
 
-export default function VerticalLinearStepper() {
+export default function VerticalLinearStepper({ color }: { color: string }) {
   const [activeStep, setActiveStep] = React.useState(0)
-  const theme = useTheme()
 
   const setCurrent = (id: number) => {
     setActiveStep(id)
@@ -42,17 +34,11 @@ export default function VerticalLinearStepper() {
                 sx={{
                   mt: 1,
                   mr: 1,
-                  backgroundColor:
-                    theme.palette.mode === 'dark' ? green[700] : amber[700],
+                  backgroundColor: color,
                   '&:hover': {
-                    backgroundColor:
-                      theme.palette.mode === 'dark' ? green[500] : amber[900],
+                    backgroundColor: color,
                   },
                 }}
-                // style={{
-                //   backgroundColor:
-                //     theme.palette.mode === "dark" ? green[500] : amber[900],
-                // }}
               >
                 {step.label}
               </Button>
