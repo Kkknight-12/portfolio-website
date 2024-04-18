@@ -22,6 +22,9 @@ export default function VerticalLinearStepper({ color }: { color: string }) {
   const setCurrent = (id: number) => {
     setActiveStep(id)
   }
+
+  console.log('color ', color)
+
   return (
     <Box sx={{ maxWidth: 500 }}>
       <Stepper activeStep={activeStep} orientation="vertical" nonLinear>
@@ -34,9 +37,9 @@ export default function VerticalLinearStepper({ color }: { color: string }) {
                 sx={{
                   mt: 1,
                   mr: 1,
-                  backgroundColor: color,
+                  backgroundColor: '#4caf50',
                   '&:hover': {
-                    backgroundColor: color,
+                    backgroundColor: '#4caf50',
                   },
                 }}
               >

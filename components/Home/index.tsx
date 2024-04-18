@@ -22,8 +22,6 @@ function HomePage() {
   //     {children}
   //   </Typography>
   // );
-  console.log('color ', color)
-  console.log('theme.palette.mode ', theme.palette.mode)
 
   return (
     <Box
