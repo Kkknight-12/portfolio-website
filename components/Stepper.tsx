@@ -1,3 +1,5 @@
+'use client'
+
 import { steps } from '@/constant'
 import CircleIcon from '@mui/icons-material/Circle'
 import { ListItem, ListItemIcon, ListItemText, Stack } from '@mui/material'
@@ -22,8 +24,6 @@ export default function VerticalLinearStepper({ color }: { color: string }) {
   const setCurrent = (id: number) => {
     setActiveStep(id)
   }
-
-  console.log('color ', color)
 
   return (
     <Box sx={{ maxWidth: 500 }}>

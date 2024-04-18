@@ -1,4 +1,5 @@
 'use client'
+
 import Page from '@/components/ComponentWrapper'
 import VerticalLinearStepper from '@/components/Stepper'
 import { Box, Stack } from '@mui/material'
