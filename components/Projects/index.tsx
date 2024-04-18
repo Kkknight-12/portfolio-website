@@ -14,6 +14,7 @@ const ProjectPage = () => {
         alignItems: 'center',
         color: 'text.primary',
         p: 3,
+        pb: 15,
         gap: 15,
       }}
     >
