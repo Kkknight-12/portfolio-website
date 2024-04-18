@@ -37,9 +37,9 @@ export default function VerticalLinearStepper({ color }: { color: string }) {
                 sx={{
                   mt: 1,
                   mr: 1,
-                  backgroundColor: '#4caf50',
+                  backgroundColor: `${color} !important`,
                   '&:hover': {
-                    backgroundColor: '#4caf50',
+                    backgroundColor: `${color} !important`,
                   },
                 }}
               >
