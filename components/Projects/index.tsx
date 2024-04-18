@@ -9,7 +9,7 @@ const ProjectPage = () => {
     <Box
       sx={{
         display: 'flex',
-
+        flexDirection: { xs: 'column', md: 'row' },
         justifyContent: 'center',
         alignItems: 'center',
         color: 'text.primary',
