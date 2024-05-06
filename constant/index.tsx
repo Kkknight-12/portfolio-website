@@ -22,6 +22,19 @@ export const navLinks = [
 
 export const Projects = [
   {
+    type: 'project',
+    title: 'Editor Application',
+    description:
+      'This is a web editor which compiles your react' +
+      ' code and show the preview. The application also' +
+      ' have markdown to write notes',
+    website: 'https://editor-knight.vercel.app/',
+    github: 'https://github.com/Kkknight-12/notes_code_editor',
+    image: '/editor.png',
+    placeholder: 'https://via.placeholder.com/150',
+  },
+  {
+    type: 'project',
     title: 'Task Manager Application ',
     description:
       'MERN stack app with CRUD operations, JWT login, Redux Toolkit, context API for state management, and dependencies on react-hook-form, yup\n' +
@@ -33,6 +46,7 @@ export const Projects = [
     placeholder: 'https://via.placeholder.com/150',
   },
   {
+    type: 'project',
     title: 'Drag And Drop Application',
     description:
       'MERN stack app with CRUD operations, JWT login, Redux for state management, and dependencies on Bootstrap and react-beautiful-dnd\n' +

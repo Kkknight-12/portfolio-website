@@ -1,8 +1,13 @@
-import ProjectCard from '@/components/Projects/ProjectCard'
 import Page from '@/components/ComponentWrapper'
+import Loading from '@/components/Loading'
 import { Projects } from '@/constant'
 import { Box } from '@mui/system'
+import { Suspense } from 'react'
 import * as React from 'react'
+
+const ProjectCard = React.lazy(
+  () => import('@/components/Projects/ProjectCard'),
+)
 
 const ProjectPage = () => {
   return (
@@ -19,7 +24,9 @@ const ProjectPage = () => {
       }}
     >
       {Projects.map((project, index) => (
-        <ProjectCard key={index} project={project} />
+        <Suspense key={index} fallback={<Loading />}>
+          <ProjectCard key={index} project={project} />
+        </Suspense>
       ))}
     </Box>
   )

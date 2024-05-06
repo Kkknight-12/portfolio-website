@@ -45,9 +45,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
     >
       <CardMedia
         component="img"
-        height="140"
         image={project.image ?? project.placeholder}
         alt={project.title}
+        sx={{ height: 200 }}
       />
       <CardContent
         sx={{ height: 200, overflow: 'hidden' }}
