@@ -11,23 +11,42 @@ const ProjectCard = React.lazy(
 
 const ProjectPage = () => {
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-        justifyContent: 'center',
-        alignItems: 'center',
-        color: 'text.primary',
-        p: 3,
-        pb: 15,
-        gap: 15,
-      }}
-    >
-      {Projects.map((project, index) => (
-        <Suspense key={index} fallback={<Loading />}>
-          <ProjectCard key={index} project={project} />
-        </Suspense>
-      ))}
+    <Box sx={{ color: 'text.primary' }}>
+      {Projects.map((project, index) => {
+        if ('content' in project) {
+          return (
+            <Suspense key={index} fallback={<Loading />}>
+              {project.type === 'info' && (
+                <p className="text-4xl tracking-wide text-center mb-6">
+                  {project.content}
+                </p>
+              )}
+            </Suspense>
+          )
+        } else {
+          return (
+            <Box
+              key={index}
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', md: 'row' },
+                justifyContent: 'center',
+                alignItems: 'center',
+                color: 'text.primary',
+                p: 3,
+                pb: 15,
+                gap: 15,
+              }}
+            >
+              {project.map((projectInfo, index) => (
+                <Suspense key={index} fallback={<Loading />}>
+                  <ProjectCard key={index} project={projectInfo} />
+                </Suspense>
+              ))}
+            </Box>
+          )
+        }
+      })}
     </Box>
   )
 }

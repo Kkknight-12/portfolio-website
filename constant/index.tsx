@@ -22,40 +22,51 @@ export const navLinks = [
 
 export const Projects = [
   {
-    type: 'project',
-    title: 'Editor Application',
-    description:
-      'This is a web editor which compiles your react' +
-      ' code and show the preview. The application also' +
-      ' have markdown to write notes',
-    website: 'https://editor-knight.vercel.app/',
-    github: 'https://github.com/Kkknight-12/notes_code_editor',
-    image: '/editor.png',
-    placeholder: 'https://via.placeholder.com/150',
+    type: 'info',
+    content:
+      'These are my recent projects' + ' which i' + ' am currently working on',
   },
-  {
-    type: 'project',
-    title: 'Task Manager Application ',
-    description:
-      'MERN stack app with CRUD operations, JWT login, Redux Toolkit, context API for state management, and dependencies on react-hook-form, yup\n' +
-      'resolver, notistack, nprogress, Mui, conify, axios, react-router. Optimized with useMemo. Utilizes hooks including useRoutes, useNavigate, useRef,\n' +
-      'useState, useEffect',
-    website: 'https://task-manager-application-chi.vercel.app/',
-    github: 'https://github.com/Kkknight-12/Task-Manager-Application/',
-    image: '/task-manager.png',
-    placeholder: 'https://via.placeholder.com/150',
-  },
-  {
-    type: 'project',
-    title: 'Drag And Drop Application',
-    description:
-      'MERN stack app with CRUD operations, JWT login, Redux for state management, and dependencies on Bootstrap and react-beautiful-dnd\n' +
-      'enables users to add, drag-drop tasks, and edit. Backed by Node.js with MongoDB.',
-    website: 'https://drag-drop-application.vercel.app/',
-    github: 'https://github.com/Kkknight-12/Drag-Drop-Application',
-    image: '/drag-drop.png',
-    placeholder: 'https://via.placeholder.com/150',
-  },
+  [
+    {
+      type: 'project',
+      title: 'Editor Application',
+      description:
+        'This is a web editor which compiles your react' +
+        ' code and show the preview. The application also' +
+        ' have markdown to write notes',
+      website: 'https://editor-knight.vercel.app/',
+      github: 'https://github.com/Kkknight-12/notes_code_editor',
+      image: '/editor.png',
+      placeholder: 'https://via.placeholder.com/150',
+    },
+  ],
+
+  { type: 'info', content: 'These are my Old projects' },
+  [
+    {
+      type: 'project',
+      title: 'Task Manager Application ',
+      description:
+        'MERN stack app with CRUD operations, JWT login, Redux Toolkit, context API for state management, and dependencies on react-hook-form, yup\n' +
+        'resolver, notistack, nprogress, Mui, conify, axios, react-router. Optimized with useMemo. Utilizes hooks including useRoutes, useNavigate, useRef,\n' +
+        'useState, useEffect',
+      website: 'https://task-manager-application-chi.vercel.app/',
+      github: 'https://github.com/Kkknight-12/Task-Manager-Application/',
+      image: '/task-manager.png',
+      placeholder: 'https://via.placeholder.com/150',
+    },
+    {
+      type: 'project',
+      title: 'Drag And Drop Application',
+      description:
+        'MERN stack app with CRUD operations, JWT login, Redux for state management, and dependencies on Bootstrap and react-beautiful-dnd\n' +
+        'enables users to add, drag-drop tasks, and edit. Backed by Node.js with MongoDB.',
+      website: 'https://drag-drop-application.vercel.app/',
+      github: 'https://github.com/Kkknight-12/Drag-Drop-Application',
+      image: '/drag-drop.png',
+      placeholder: 'https://via.placeholder.com/150',
+    },
+  ],
 ]
 
 export const steps: {
