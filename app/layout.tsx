@@ -4,6 +4,7 @@ import MuiThemeProvider from '@/theme'
 import type { Metadata } from 'next'
 import { Arima, Borel, Inter } from 'next/font/google'
 import './globals.css'
+import CanvasComponent from '@/components/canvas/ParticleComponent'
 
 const inter = Inter({ subsets: ['latin'] })
 const arima = Arima({ subsets: ['latin'] })
@@ -31,6 +32,7 @@ export default function RootLayout({
         <MuiThemeProvider>
           <body className={`${arima.className} ${inter.className}`}>
             <Navbar />
+            <CanvasComponent />
             {children}
           </body>
         </MuiThemeProvider>

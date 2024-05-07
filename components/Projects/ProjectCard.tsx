@@ -58,13 +58,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
       </CardContent>
       <CardActions className="mt-4">
         <Button size="small" color="primary">
-          <Link target="_blank" href={project.website} passHref>
+          <Link target="_blank" href={project.website as string} passHref>
             Website
           </Link>
         </Button>
         <Button size="small" color="primary">
           <Link
-            href={project.github}
+            href={project.github as string}
             passHref
             target="_blank"
             rel="noopener noreferrer"
