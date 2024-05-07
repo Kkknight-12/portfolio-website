@@ -11,6 +11,22 @@ const CanvasComponent: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   useEffect(() => {
+    const resizeCanvas = () => {
+      if (!canvasRef.current) return
+      const canvas = canvasRef.current
+      canvas.width = window.innerWidth
+      canvas.height = document.body.scrollHeight
+    }
+
+    window.addEventListener('resize', resizeCanvas)
+
+    // Cleanup function to remove the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('resize', resizeCanvas)
+    }
+  }, [])
+
+  useEffect(() => {
     if (!canvasRef.current) return
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')

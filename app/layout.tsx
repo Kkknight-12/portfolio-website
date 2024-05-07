@@ -32,7 +32,6 @@ export default function RootLayout({
         <MuiThemeProvider>
           <body className={`${arima.className} ${inter.className}`}>
             <Navbar />
-            <CanvasComponent />
             {children}
           </body>
         </MuiThemeProvider>

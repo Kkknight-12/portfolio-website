@@ -82,6 +82,7 @@ function HomePage() {
           </Stack>
         </Stack>
       </Stack>
+
       <VerticalLinearStepper color={color} />
     </Box>
   )
