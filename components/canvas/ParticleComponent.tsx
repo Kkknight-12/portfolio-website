@@ -18,7 +18,7 @@ const CanvasComponent: React.FC = () => {
 
     // Your canvas code goes here
     canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
+    canvas.height = document.body.scrollHeight
 
     console.log(ctx)
     const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height)
@@ -33,6 +33,7 @@ const CanvasComponent: React.FC = () => {
     animate(canvas, ctx)
     console.log('animate after')
   }, [])
+
   console.log('canvas')
   return (
     <canvas
@@ -43,7 +44,6 @@ const CanvasComponent: React.FC = () => {
         top: 0, // these four lines ensure the canvas covers the entire parent
         left: 0,
         // width: '100% !important',
-        // height: '100% !important',
       }}
       ref={canvasRef}
     />
