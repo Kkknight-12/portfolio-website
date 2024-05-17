@@ -11,13 +11,10 @@ import {
 
 import Page from '@/components/ComponentWrapper';
 import { Box } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 import 'react-vertical-timeline-component/style.min.css';
 import Skills from './_components/skills';
 
-const Experience = () => {
-  const theme = useTheme();
-
+const ExperiencePage = () => {
   return (
     <Box
       sx={{ color: 'text.primary' }}
@@ -28,7 +25,7 @@ const Experience = () => {
         <SectionHeading>My experience</SectionHeading>
 
         <VerticalTimeline lineColor=''>
-          {EXPERIENCES_DATA.map((experience, i) => (
+          {EXPERIENCES_DATA?.map((experience, i) => (
             <React.Fragment key={`experience-${i}`}>
               <VerticalTimelineElement
                 visible={true}
@@ -63,4 +60,4 @@ const Experience = () => {
   );
 };
 
-export default Page(Experience);
+export default Page(ExperiencePage);
