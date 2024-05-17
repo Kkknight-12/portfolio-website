@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import ThemeContext from "@/_context/ThemeContext";
-import { CacheProvider } from "@emotion/react";
-import { GlobalStyles, ThemeProvider as MUIThemeProvider } from "@mui/material";
-import { createTheme } from "@mui/material";
-import { amber, grey } from "@mui/material/colors";
-import { cache } from "@/app/createEmotionCache";
-import React from "react";
-import { ReactNode } from "react";
+import ThemeContext from '@/_context/ThemeContext';
+import { CacheProvider } from '@emotion/react';
+import { GlobalStyles, ThemeProvider as MUIThemeProvider } from '@mui/material';
+import { createTheme } from '@mui/material';
+import { amber, grey } from '@mui/material/colors';
+import { cache } from '@/app/createEmotionCache';
+import React from 'react';
+import { ReactNode } from 'react';
 
 type ThemeProps = {
   children: ReactNode;
@@ -21,7 +21,7 @@ export default function Theme({ children }: ThemeProps) {
       createTheme({
         palette: {
           mode,
-          ...(mode === "light"
+          ...(mode === 'light'
             ? {
                 primary: amber,
                 divider: amber[200],
@@ -39,10 +39,10 @@ export default function Theme({ children }: ThemeProps) {
                 divider: grey[700],
                 background: {
                   paper: grey[900],
-                  default: "#111827",
+                  default: '#111827',
                 },
                 text: {
-                  primary: "#fff",
+                  primary: '#fff',
                   secondary: grey[500],
                 },
               }),
@@ -52,17 +52,17 @@ export default function Theme({ children }: ThemeProps) {
   );
 
   return (
-    <CacheProvider value={cache}>
-      <MUIThemeProvider theme={theme}>
-        <GlobalStyles
-          styles={{
-            body: {
-              backgroundColor: theme.palette.background.default,
-            },
-          }}
-        />
-        {children}
-      </MUIThemeProvider>
-    </CacheProvider>
+    // <CacheProvider value={cache}>
+    <MUIThemeProvider theme={theme}>
+      <GlobalStyles
+        styles={{
+          body: {
+            backgroundColor: theme.palette.background.default,
+          },
+        }}
+      />
+      {children}
+    </MUIThemeProvider>
+    // </CacheProvider>
   );
 }
