@@ -10,9 +10,9 @@
   /* font-family: 'Comic Neue', cursive; */
 }
 
-.borel-font {
+/* .borel-font {
   font-family: 'Borel', cursive;
-}
+} */
 
 @layer components {
   .text-glow {

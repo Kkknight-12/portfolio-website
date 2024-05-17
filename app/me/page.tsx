@@ -32,7 +32,7 @@ const About = () => {
 
         <div className='text-center flex flex-col gap-5 text-lg'>
           <p className=''>
-            I'm a{' '}
+            I&apos;m a{' '}
             <strong className='text-purple-300'>Frontend Developer</strong> with
             a unique blend of skills in{' '}
             <strong className='text-purple-300'>React</strong>,{' '}
@@ -62,8 +62,8 @@ const About = () => {
 
           <p className=''>
             I believe in the power of clean, efficient code and always strive to
-            write programs that are robust and easy to maintain. I'm always
-            eager to learn and grow, and I'm excited about the endless
+            write programs that are robust and easy to maintain. I&apos;m always
+            eager to learn and grow, and I&apos;m excited about the endless
             possibilities that the future of web development holds.
           </p>
 
