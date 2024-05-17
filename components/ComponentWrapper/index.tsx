@@ -42,7 +42,7 @@ const Page = (Component: ComponentType<ComponentProps>) => {
     props: PropsWithChildren<ComponentProps>,
     ref: Ref<any>,
   ) => (
-    <Box className="pt-10 " ref={ref}>
+    <Box className="pt-10 px-2" ref={ref}>
       {/* <CanvasComponent /> */}
       <Component {...props} />
     </Box>

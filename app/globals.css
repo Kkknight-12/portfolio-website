@@ -2,16 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    /* font-family: 'Roboto', sans-serif; */
-    /* font-family: 'Comic Neue', cursive; */
-
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* font-family: 'Roboto', sans-serif; */
+  /* font-family: 'Comic Neue', cursive; */
 }
 
 .borel-font {
-    font-family: 'Borel', cursive;
+  font-family: 'Borel', cursive;
+}
+
+@layer components {
+  .text-glow {
+    text-shadow: 0 0 4rem rgb(192 219 255 / 30%),
+      0 0 1rem rgb(167 139 250 / 30%);
+  }
+
+  .code-effect::before {
+    content: '.';
+    @apply text-gray-50;
+  }
+
+  .code-effect::after {
+    content: '()';
+    @apply text-gray-50;
+  }
+
+  .react-effect::before {
+    content: '<';
+    @apply text-gray-50;
+  }
+  .react-effect::after {
+    content: '/>';
+    @apply text-gray-50 ml-2;
+  }
 }

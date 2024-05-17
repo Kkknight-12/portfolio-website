@@ -2,11 +2,7 @@
 
 import ThemeContext from "@/_context/ThemeContext";
 import { CacheProvider } from "@emotion/react";
-import {
-  CssBaseline,
-  GlobalStyles,
-  ThemeProvider as MUIThemeProvider,
-} from "@mui/material";
+import { GlobalStyles, ThemeProvider as MUIThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material";
 import { amber, grey } from "@mui/material/colors";
 import { cache } from "@/app/createEmotionCache";
@@ -33,12 +29,17 @@ export default function Theme({ children }: ThemeProps) {
                   primary: grey[900],
                   secondary: grey[800],
                 },
+                background: {
+                  paper: grey[900],
+                  default: grey[100],
+                },
               }
             : {
                 primary: grey,
                 divider: grey[700],
                 background: {
                   paper: grey[900],
+                  default: "#111827",
                 },
                 text: {
                   primary: "#fff",
@@ -56,13 +57,10 @@ export default function Theme({ children }: ThemeProps) {
         <GlobalStyles
           styles={{
             body: {
-              backgroundColor:
-                mode === "dark" && theme.palette.background.default,
+              backgroundColor: theme.palette.background.default,
             },
           }}
         />
-        {/* <CssBaseline /> */}
-
         {children}
       </MUIThemeProvider>
     </CacheProvider>

@@ -36,7 +36,7 @@ const CanvasComponent: React.FC = () => {
     canvas.width = window.innerWidth
     canvas.height = document.body.scrollHeight
 
-    console.log(ctx)
+    // console.log(ctx)
     const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height)
     gradient.addColorStop(0, 'white')
     gradient.addColorStop(0.5, 'gold')
@@ -45,12 +45,12 @@ const CanvasComponent: React.FC = () => {
     ctx.strokeStyle = 'white'
 
     //
-    console.log('animate before')
+    // console.log('animate before')
     animate(canvas, ctx)
-    console.log('animate after')
+    // console.log('animate after')
   }, [])
 
-  console.log('canvas')
+  // console.log('canvas')
   return (
     <canvas
       style={{

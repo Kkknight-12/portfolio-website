@@ -1,10 +1,10 @@
-import { Stack } from '@mui/material'
-import * as React from 'react'
+import { Stack } from '@mui/material';
+import * as React from 'react';
 
 type JobDetailProps = {
-  period: string
-  location: string
-}
+  period: string;
+  location: string;
+};
 
 export const JobDetail: React.FC<JobDetailProps> = ({ period, location }) => {
   return (
@@ -19,5 +19,5 @@ export const JobDetail: React.FC<JobDetailProps> = ({ period, location }) => {
       <div> Location: {location} </div>
       <div> {period} </div>
     </Stack>
-  )
-}
+  );
+};

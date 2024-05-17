@@ -1,6 +1,6 @@
 'use client'
 
-import { steps } from '@/constant'
+import { steps } from '@/constants'
 import CircleIcon from '@mui/icons-material/Circle'
 import { ListItem, ListItemIcon, ListItemText, Stack } from '@mui/material'
 import Box from '@mui/material/Box'
