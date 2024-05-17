@@ -5,13 +5,20 @@ type ComponentProps = {
   children?: ReactNode;
 };
 
-const Page = (Component: any) => {
-  const WithPageStyles = (props: any) => (
-    <Box className='pt-10 px-2'>
-      {/* <CanvasComponent /> */}
-      <Component {...props} />
-    </Box>
-  );
+type ServerComponentProps = {
+  params: {};
+  searchParams: {};
+};
+const Page = (Component: ComponentType<ComponentProps>) => {
+  const WithPageStyles = (props?: any) => {
+    console.log('props ', props);
+    return (
+      <Box className='pt-10 px-2'>
+        {/* <CanvasComponent /> */}
+        <Component {...props} />
+      </Box>
+    );
+  };
 
   return WithPageStyles;
 };
