@@ -4,21 +4,33 @@ import MuiThemeProvider from '@/theme';
 import type { Metadata } from 'next';
 import { Arima, Inter } from 'next/font/google';
 import './globals.css';
-import CanvasComponent from '@/components/canvas/ParticleComponent';
+import { siteMetadata } from '@/constants';
 
 const inter = Inter({ subsets: ['latin'] });
 const arima = Arima({ subsets: ['latin'] });
-// const borel = Borel({
-//   weight: '400',
-//   style: 'normal',
-//   display: 'swap',
-//   preload: true,
-//   subsets: ['latin'],
-// })
 
 export const metadata: Metadata = {
-  title: 'Mayank',
-  description: 'Mayank Sarasiya Portfolio',
+  applicationName: 'Mayank Portfolio',
+  title: siteMetadata.title,
+  description: siteMetadata.description,
+  openGraph: {
+    type: 'website',
+    url: siteMetadata.url,
+    title: siteMetadata.title,
+    description: siteMetadata.description,
+    siteName: siteMetadata.siteName,
+    images: [
+      {
+        url: 'https://mayank-portfolio-seven.vercel.app/og.png',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@MayankTwitterHandle',
+    creator: '@MayankTwitterHandle',
+    images: 'https://mayank-portfolio-seven.vercel.app/twitter-card.png',
+  },
 };
 
 export default function RootLayout({

@@ -1,6 +1,13 @@
-import * as React from 'react'
-import { JobDetail } from '../app/(home)/_components/job-details'
-import { Computer, GraduationCapIcon } from 'lucide-react'
+import { Computer, GraduationCapIcon } from 'lucide-react';
+import * as React from 'react';
+
+export const siteMetadata = {
+  title: "Mayank's portfolio",
+  description: 'Hi there 👋 My name is Mayank and I love build websites',
+  siteName: 'Passionate developer',
+  image: '',
+  url: 'https://mayank-portfolio-seven.vercel.app',
+};
 
 export const navLinks = [
   {
@@ -23,7 +30,7 @@ export const navLinks = [
     title: 'Contact',
     path: '/contact',
   },
-]
+];
 
 // External links
 export const EXTRA_LINKS = {
@@ -32,7 +39,7 @@ export const EXTRA_LINKS = {
   resume: '/resume.pdf',
   source_code: '',
   email: 'mayanks365@gmail.com',
-} as const
+} as const;
 
 export const Projects = [
   {
@@ -82,7 +89,7 @@ export const Projects = [
       tags: ['React', 'Node.js', 'JWT', 'Express', 'MongoDB'],
     },
   ],
-]
+];
 
 // Data for work experience
 export const EXPERIENCES_DATA = [
@@ -109,7 +116,7 @@ export const EXPERIENCES_DATA = [
     icon: React.createElement(GraduationCapIcon),
     date: '2018 - 2020',
   },
-] as const
+] as const;
 
 // Data for skills
 export const SKILLS_DATA = [
@@ -123,7 +130,7 @@ export const SKILLS_DATA = [
   'Git',
   'Tailwind',
   'Redux',
-] as const
+] as const;
 
 // Owner name
-export const OWNER_NAME = 'Mayank Sarasiya'
+export const OWNER_NAME = 'Mayank Sarasiya';
