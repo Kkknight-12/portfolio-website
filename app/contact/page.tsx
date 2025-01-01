@@ -279,156 +279,155 @@ function ContactForm() {
   //   </div>
   // );
 
-  return (
-    <div className='container mx-auto px-4 py-12'>
-      {/* Hero Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className='text-center max-w-3xl mx-auto mb-16'
-      >
-        <h1 className='text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent'>
-          Let's Work Together
-        </h1>
-        <p className='text-gray-300 text-lg'>
-          Have a project in mind? Looking to collaborate? Or just want to say
-          hi? I&apos;d love to hear from you!
-        </p>
-      </motion.div>
+  return null;
+  // <div className='container mx-auto px-4 py-12'>
+  //   {/* Hero Section */}
+  //   <motion.div
+  //     initial={{ opacity: 0, y: 20 }}
+  //     animate={{ opacity: 1, y: 0 }}
+  //     className='text-center max-w-3xl mx-auto mb-16'
+  //   >
+  //     <h1 className='text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent'>
+  //       Let's Work Together
+  //     </h1>
+  //     <p className='text-gray-300 text-lg'>
+  //       Have a project in mind? Looking to collaborate? Or just want to say
+  //       hi? I&apos;d love to hear from you!
+  //     </p>
+  //   </motion.div>
 
-      <div className='grid lg:grid-cols-2 gap-12'>
-        {/* Contact Info */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className='space-y-8'
-        >
-          {/* Contact Cards */}
-          <div className='grid gap-6'>
-            {contactInfo.map((info, index) => (
-              <motion.div
-                key={info.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 + index * 0.1 }}
-                className='bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-xl hover:border-white/20 transition-colors'
-              >
-                <div className='flex gap-4'>
-                  <div className='text-purple-400'>{info.icon}</div>
-                  <div>
-                    <h3 className='text-lg font-semibold mb-1'>{info.title}</h3>
-                    <p className='text-gray-300 font-medium'>{info.details}</p>
-                    <p className='text-gray-400 text-sm'>{info.description}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+  //   <div className='grid lg:grid-cols-2 gap-12'>
+  //     {/* Contact Info */}
+  //     <motion.div
+  //       initial={{ opacity: 0, x: -20 }}
+  //       animate={{ opacity: 1, x: 0 }}
+  //       transition={{ delay: 0.2 }}
+  //       className='space-y-8'
+  //     >
+  //       {/* Contact Cards */}
+  //       <div className='grid gap-6'>
+  //         {contactInfo.map((info, index) => (
+  //           <motion.div
+  //             key={info.title}
+  //             initial={{ opacity: 0, y: 20 }}
+  //             animate={{ opacity: 1, y: 0 }}
+  //             transition={{ delay: 0.3 + index * 0.1 }}
+  //             className='bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-xl hover:border-white/20 transition-colors'
+  //           >
+  //             <div className='flex gap-4'>
+  //               <div className='text-purple-400'>{info.icon}</div>
+  //               <div>
+  //                 <h3 className='text-lg font-semibold mb-1'>{info.title}</h3>
+  //                 <p className='text-gray-300 font-medium'>{info.details}</p>
+  //                 <p className='text-gray-400 text-sm'>{info.description}</p>
+  //               </div>
+  //             </div>
+  //           </motion.div>
+  //         ))}
+  //       </div>
 
-          {/* Social Links */}
-          <div className='space-y-4'>
-            <h2 className='text-xl font-semibold'>Connect With Me</h2>
-            <div className='flex gap-4'>
-              {socialLinks.map((social, index) => (
-                <motion.a
-                  key={social.label}
-                  href={social.href}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 + index * 0.1 }}
-                  className={`bg-white/5 p-3 rounded-full ${social.color} transition-colors`}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  {social.icon}
-                </motion.a>
-              ))}
-            </div>
-          </div>
-        </motion.div>
+  //       {/* Social Links */}
+  //       <div className='space-y-4'>
+  //         <h2 className='text-xl font-semibold'>Connect With Me</h2>
+  //         <div className='flex gap-4'>
+  //           {socialLinks.map((social, index) => (
+  //             <motion.a
+  //               key={social.label}
+  //               href={social.href}
+  //               target='_blank'
+  //               rel='noopener noreferrer'
+  //               initial={{ opacity: 0, y: 20 }}
+  //               animate={{ opacity: 1, y: 0 }}
+  //               transition={{ delay: 0.6 + index * 0.1 }}
+  //               className={`bg-white/5 p-3 rounded-full ${social.color} transition-colors`}
+  //               whileHover={{ scale: 1.1 }}
+  //               whileTap={{ scale: 0.9 }}
+  //             >
+  //               {social.icon}
+  //             </motion.a>
+  //           ))}
+  //         </div>
+  //       </div>
+  //     </motion.div>
 
-        {/* Contact Form */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className='bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-xl'
-        >
-          <form onSubmit={handleSubmit} className='space-y-6'>
-            <div className='space-y-2'>
-              <Input
-                name='name'
-                placeholder='Your name'
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-                disabled={isLoading}
-                className='bg-white/5 border-white/10 focus:border-purple-500'
-              />
-            </div>
-            <div className='space-y-2'>
-              <Input
-                name='email'
-                type='email'
-                placeholder='Your email'
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                disabled={isLoading}
-                className='bg-white/5 border-white/10 focus:border-purple-500'
-              />
-            </div>
-            <div className='space-y-2'>
-              <Textarea
-                name='message'
-                placeholder='Your message'
-                value={formData.message}
-                onChange={(e) =>
-                  setFormData({ ...formData, message: e.target.value })
-                }
-                className='min-h-[150px] bg-white/5 border-white/10 focus:border-purple-500'
-                disabled={isLoading}
-              />
-            </div>
-            <Button
-              type='submit'
-              className='w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90'
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                'Sending...'
-              ) : (
-                <>
-                  Send Message
-                  <Send className='w-4 h-4 ml-2' />
-                </>
-              )}
-            </Button>
-          </form>
-        </motion.div>
-      </div>
+  //     {/* Contact Form */}
+  //     <motion.div
+  //       initial={{ opacity: 0, x: 20 }}
+  //       animate={{ opacity: 1, x: 0 }}
+  //       transition={{ delay: 0.2 }}
+  //       className='bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-xl'
+  //     >
+  //       <form onSubmit={handleSubmit} className='space-y-6'>
+  //         <div className='space-y-2'>
+  //           <Input
+  //             name='name'
+  //             placeholder='Your name'
+  //             value={formData.name}
+  //             onChange={(e) =>
+  //               setFormData({ ...formData, name: e.target.value })
+  //             }
+  //             disabled={isLoading}
+  //             className='bg-white/5 border-white/10 focus:border-purple-500'
+  //           />
+  //         </div>
+  //         <div className='space-y-2'>
+  //           <Input
+  //             name='email'
+  //             type='email'
+  //             placeholder='Your email'
+  //             value={formData.email}
+  //             onChange={(e) =>
+  //               setFormData({ ...formData, email: e.target.value })
+  //             }
+  //             disabled={isLoading}
+  //             className='bg-white/5 border-white/10 focus:border-purple-500'
+  //           />
+  //         </div>
+  //         <div className='space-y-2'>
+  //           <Textarea
+  //             name='message'
+  //             placeholder='Your message'
+  //             value={formData.message}
+  //             onChange={(e) =>
+  //               setFormData({ ...formData, message: e.target.value })
+  //             }
+  //             className='min-h-[150px] bg-white/5 border-white/10 focus:border-purple-500'
+  //             disabled={isLoading}
+  //           />
+  //         </div>
+  //         <Button
+  //           type='submit'
+  //           className='w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90'
+  //           disabled={isLoading}
+  //         >
+  //           {isLoading ? (
+  //             'Sending...'
+  //           ) : (
+  //             <>
+  //               Send Message
+  //               <Send className='w-4 h-4 ml-2' />
+  //             </>
+  //           )}
+  //         </Button>
+  //       </form>
+  //     </motion.div>
+  //   </div>
 
-      {/* Animation Dots */}
-      <div className='hidden lg:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10'>
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className='w-[500px] h-[500px] rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 blur-3xl'
-        />
-      </div>
-    </div>
-  );
+  //   {/* Animation Dots */}
+  //   <div className='hidden lg:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10'>
+  //     <motion.div
+  //       animate={{
+  //         scale: [1, 1.2, 1],
+  //         opacity: [0.3, 0.5, 0.3],
+  //       }}
+  //       transition={{
+  //         duration: 4,
+  //         repeat: Infinity,
+  //         ease: 'easeInOut',
+  //       }}
+  //       className='w-[500px] h-[500px] rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 blur-3xl'
+  //     />
+  //   </div>
+  // </div>
 }
 export default Page(ContactForm);
