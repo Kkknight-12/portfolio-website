@@ -38,7 +38,7 @@ export function BlogCard({ blog }: BlogCardProps) {
             {blog.title}
           </h2>
 
-          <p className='text-gray-300 mb-4 line-clamp-2'>{blog.description}</p>
+          {/* <p className='text-gray-300 mb-4 line-clamp-2'>{blog.description}</p> */}
 
           <div className='flex justify-between items-center text-sm text-gray-400'>
             <div className='flex items-center gap-2'>
