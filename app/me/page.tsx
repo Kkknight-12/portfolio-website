@@ -205,9 +205,9 @@ export default function AboutPage() {
 
           <div className='space-y-4 text-gray-300'>
             <p className='leading-relaxed'>
-              I'm passionate about creating intuitive user interfaces that make
-              a real difference. Every project is an opportunity to learn and
-              improve.
+              I&apos;m passionate about creating intuitive user interfaces that
+              make a real difference. Every project is an opportunity to learn
+              and improve.
             </p>
             <p className='leading-relaxed'>
               My goal is to build web applications that are not just functional,

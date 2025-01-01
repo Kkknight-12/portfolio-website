@@ -189,7 +189,8 @@ function ContactForm() {
 
       toast({
         title: 'Message Sent!',
-        description: "Thank you for reaching out. I'll get back to you soon.",
+        description:
+          'Thank you for reaching out. I&apos;ll get back to you soon.',
       });
       setFormData(initialFormData);
     } catch (error) {
@@ -291,7 +292,7 @@ function ContactForm() {
         </h1>
         <p className='text-gray-300 text-lg'>
           Have a project in mind? Looking to collaborate? Or just want to say
-          hi? I'd love to hear from you!
+          hi? I&apos;d love to hear from you!
         </p>
       </motion.div>
 
