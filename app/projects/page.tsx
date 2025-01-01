@@ -6,4 +6,4 @@ const Projects = () => {
   return <ProjectPage />;
 };
 
-export default Page(Projects);
+export default Projects;
