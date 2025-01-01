@@ -9,7 +9,7 @@ import { BlogPost, BlogFilters, PaginationInfo } from '@/types';
 import { BlogCard } from '@/components/blog/BlogCard';
 import { Button } from '@/components/ui/button';
 
-const INITIAL_FILTERS = {
+const INITIAL_FILTERS: BlogFilters = {
   search: '',
   categories: [],
   status: 'all',
@@ -19,29 +19,29 @@ const INITIAL_FILTERS = {
 
 export default function BlogPage() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
-   const [pagination, setPagination] = useState<PaginationInfo>({
-     total: 0,
-     page: 1,
-     totalPages: 1,
-     hasMore: false,
-   });
+  const [pagination, setPagination] = useState<PaginationInfo>({
+    total: 0,
+    page: 1,
+    totalPages: 1,
+    hasMore: false,
+  });
   const [loading, setLoading] = useState(true);
 
+  const fetchBlogs = async () => {
+    try {
+      setLoading(true);
+      const { response } = await blogService.getBlogs(INITIAL_FILTERS);
+
+      setBlogs(response.data);
+      setPagination(response.pagination);
+    } catch (error) {
+      console.error('Failed to fetch blogs:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const { response } = await blogService.getBlogs(INITIAL_FILTERS);
-
-
-        setBlogs(response.data);
-        setPagination(response.pagination);
-      } catch (error) {
-        console.error('Failed to fetch blogs:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchBlogs();
   }, []);
 
@@ -72,7 +72,7 @@ export default function BlogPage() {
             ))}
           </div>
 
-          <div className='flex justify-center gap-4 mt-8'>
+          {/* <div className='flex justify-center gap-4 mt-8'>
             <Button
               variant='outline'
               disabled={pagination.page <= 1}
@@ -90,7 +90,7 @@ export default function BlogPage() {
             >
               Next
             </Button>
-          </div>
+          </div> */}
         </>
       )}
     </div>
