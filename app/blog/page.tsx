@@ -7,7 +7,6 @@ import { formatDistanceToNow } from 'date-fns';
 import { blogService } from '@/services';
 import { BlogPost, BlogFilters, PaginationInfo } from '@/types';
 import { BlogCard } from '@/components/blog/BlogCard';
-import { blogsData } from '@/mock';
 import { Button } from '@/components/ui/button';
 
 const INITIAL_FILTERS = {
@@ -19,7 +18,7 @@ const INITIAL_FILTERS = {
 };
 
 export default function BlogPage() {
-  const [blogs, setBlogs] = useState<BlogPost[]>(blogsData.data);
+  const [blogs, setBlogs] = useState<BlogPost[]>([]);
    const [pagination, setPagination] = useState<PaginationInfo>({
      total: 0,
      page: 1,
