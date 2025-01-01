@@ -48,7 +48,7 @@ const contactInfo = [
     icon: <Clock className='h-6 w-6' />,
     title: 'Response Time',
     details: '24-48 hours',
-    description: 'I&apos;ll get back to you as soon as possible',
+    description: "I'll get back to you as soon as possible",
   },
 ];
 
