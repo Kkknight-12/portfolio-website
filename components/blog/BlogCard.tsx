@@ -12,51 +12,61 @@ interface BlogCardProps {
 
 export function BlogCard({ blog }: BlogCardProps) {
   return (
-    <motion.div
+    <motion.article
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className='group relative'
+      className='relative h-full'
     >
-      <div className='absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-xl blur-sm group-hover:blur-md transition-all' />
+      <Link href={`/blog/${blog._id}`} className='block h-full'>
+        <div className='group relative h-full bg-black/40 backdrop-blur-sm border border-white/10 hover:border-white/20 p-6 rounded-xl transition-all'>
+          {/* Gradient Blur Effect */}
+          <div className='absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity' />
 
-      <Link href={`/blog/${blog._id}`}>
-        <div className='relative bg-black/40 backdrop-blur-sm border border-white/10 p-6 rounded-xl hover:border-white/20 transition-all duration-300'>
-          <div className='flex flex-wrap gap-2 mb-3'>
-            {blog.categories.map((category) => (
-              <Badge
-                key={category._id}
-                variant='secondary'
-                className='bg-white/5 text-gray-200'
-              >
-                {category.name}
-              </Badge>
-            ))}
-          </div>
-
-          <h2 className='text-xl font-bold mb-2 text-white group-hover:text-purple-300 transition-colors'>
-            {blog.title}
-          </h2>
-
-          {/* <p className='text-gray-300 mb-4 line-clamp-2'>{blog.description}</p> */}
-
-          <div className='flex justify-between items-center text-sm text-gray-400'>
-            <div className='flex items-center gap-2'>
-              <span>👁️ {blog.metadata.views}</span>
-              <span>❤️ {blog.metadata.likes}</span>
+          <div className='relative space-y-4'>
+            {/* Categories */}
+            <div className='flex flex-wrap gap-2'>
+              {blog.categories.map((category) => (
+                <Badge
+                  key={category._id}
+                  variant='secondary'
+                  className='bg-white/10'
+                >
+                  {category.name}
+                </Badge>
+              ))}
             </div>
-            <span>
-              {formatDistanceToNow(new Date(blog.createdAt), {
-                addSuffix: true,
-              })}
-            </span>
-          </div>
 
-          <div className='absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity'>
-            <ArrowRight className='h-5 w-5 text-purple-400' />
+            {/* Title */}
+            <h2 className='text-xl font-bold line-clamp-2 text-white group-hover:text-purple-300'>
+              {blog.title}
+            </h2>
+
+            {/* Description */}
+            {/* <p className='text-gray-300 line-clamp-2 text-sm'>
+              {blog.description}
+            </p> */}
+
+            {/* Metadata */}
+            <div className='flex items-center justify-between pt-4 text-sm text-gray-400'>
+              <div className='flex items-center gap-4'>
+                <span>👁️ {blog.metadata.views}</span>
+                <span>❤️ {blog.metadata.likes}</span>
+              </div>
+              <time className='text-xs'>
+                {formatDistanceToNow(new Date(blog.createdAt), {
+                  addSuffix: true,
+                })}
+              </time>
+            </div>
+
+            {/* Read More Arrow */}
+            <div className='absolute bottom-6 right-6 opacity-0 transform translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all'>
+              <ArrowRight className='w-5 h-5 text-purple-400' />
+            </div>
           </div>
         </div>
       </Link>
-    </motion.div>
+    </motion.article>
   );
 }
