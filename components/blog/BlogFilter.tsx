@@ -56,64 +56,53 @@ export const BlogPostFilters = ({
   }, [searchDebounce]);
 
   return (
-    <div className='max-w-7xl mx-auto mb-8 space-y-4'>
-      {/* Search and Status Filters */}
-      <div className='flex flex-col sm:flex-row gap-4'>
-        <div className='relative flex-1'>
-          <Search className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground' />
-          <Input
-            placeholder='Search blogs...'
-            value={searchDebounce}
-            onChange={(e) => setSearchDebounce(e.target.value)}
-            className='pl-9'
-          />
-        </div>
-        <Select
-          value={filters.status}
-          onValueChange={(value: 'all' | 'published' | 'draft') =>
-            onFilterChange({ ...filters, status: value })
-          }
-        >
-          <SelectTrigger className='w-[180px]'>
-            <SelectValue placeholder='Status' />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value='all'>All Status</SelectItem>
-            <SelectItem value='published'>Published</SelectItem>
-            <SelectItem value='draft'>Draft</SelectItem>
-          </SelectContent>
-        </Select>
+    <div className='mb-8 space-y-4 bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-xl'>
+      {/* Search Bar */}
+      <div className='relative'>
+        <Search className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-purple-400' />
+        <Input
+          placeholder='Search blogs...'
+          value={searchDebounce}
+          onChange={(e) => setSearchDebounce(e.target.value)}
+          className='pl-9 bg-white/5 border-white/10 focus:border-purple-500'
+        />
       </div>
 
-      {/* Category Filters */}
+      {/* Category Pills */}
       <div className='flex flex-wrap gap-2'>
         {categories.map((category) => (
-          <Badge
-            key={category._id}
-            variant={
-              filters.categories.includes(category._id)
-                ? 'default'
-                : 'secondary'
-            }
-            className='cursor-pointer'
-            onClick={() => {
-              const newCategories = filters.categories.includes(category._id)
-                ? filters.categories.filter((id) => id !== category._id)
-                : [...filters.categories, category._id];
-              onFilterChange({ ...filters, categories: newCategories });
-            }}
-          >
-            {category.name}
-          </Badge>
+          <div key={category._id} className='group/item relative'>
+            <div
+              className={`absolute inset-0 rounded-full blur-sm transition-all ${
+                filters.categories.includes(category._id)
+                  ? 'bg-gradient-to-r from-purple-500 to-pink-500'
+                  : 'bg-white/10'
+              }`}
+            />
+            <Badge
+              variant={
+                filters.categories.includes(category._id)
+                  ? 'default'
+                  : 'secondary'
+              }
+              className='relative cursor-pointer hover:bg-white/10 transition-colors'
+              onClick={() => {
+                const newCategories = filters.categories.includes(category._id)
+                  ? filters.categories.filter((id) => id !== category._id)
+                  : [...filters.categories, category._id];
+                onFilterChange({ ...filters, categories: newCategories });
+              }}
+            >
+              {category.name}
+            </Badge>
+          </div>
         ))}
       </div>
 
       {/* Active Filters */}
-      {(filters.search ||
-        filters.categories.length > 0 ||
-        filters.status !== 'all') && (
-        <div className='flex items-center gap-2'>
-          <span className='text-sm text-muted-foreground'>Active filters:</span>
+      {(filters.search || filters.categories.length > 0) && (
+        <div className='flex items-center gap-2 pt-2 border-t border-white/10'>
+          <span className='text-sm text-purple-400'>Active filters</span>
           <Button
             variant='ghost'
             size='sm'
@@ -122,9 +111,9 @@ export const BlogPostFilters = ({
                 ...filters,
                 search: '',
                 categories: [],
-                status: 'all',
               })
             }
+            className='hover:bg-white/10 hover:text-purple-400'
           >
             Clear all
             <X className='ml-2 h-4 w-4' />
