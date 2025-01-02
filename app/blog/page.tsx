@@ -8,16 +8,21 @@ import { blogService } from '@/services';
 import { BlogPost, BlogFilters, PaginationInfo } from '@/types';
 import { BlogCard } from '@/components/blog/BlogCard';
 import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-const INITIAL_FILTERS: BlogFilters = {
-  search: '',
-  categories: [],
-  status: 'all',
-  page: 1,
-  limit: 9,
-};
+const PAGE_SIZE_OPTIONS = [9, 12, 15];
 
 export default function BlogPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [pagination, setPagination] = useState<PaginationInfo>({
     total: 0,
@@ -27,13 +32,23 @@ export default function BlogPage() {
   });
   const [loading, setLoading] = useState(true);
 
+  const [filters, setFilters] = useState<BlogFilters>({
+    search: searchParams.get('search') || '',
+    categories: searchParams.get('categories')?.split(',') || [],
+    status: (searchParams.get('status') as BlogFilters['status']) || 'all',
+    page: Number(searchParams.get('page')) || 1,
+    limit: Number(searchParams.get('limit')) || 10,
+  });
+
   const fetchBlogs = async () => {
     try {
       setLoading(true);
-      const { response } = await blogService.getBlogs(INITIAL_FILTERS);
+      const { response, queryParams } = await blogService.getBlogs(filters);
 
       setBlogs(response.data);
       setPagination(response.pagination);
+
+      router.push(`/blog?${queryParams.toString()}`, { scroll: false });
     } catch (error) {
       console.error('Failed to fetch blogs:', error);
     } finally {
@@ -43,7 +58,19 @@ export default function BlogPage() {
 
   useEffect(() => {
     fetchBlogs();
-  }, []);
+  }, [filters]);
+
+  const handlePageChange = (newPage: number) => {
+    setFilters((prev) => ({ ...prev, page: newPage }));
+  };
+
+  const handleLimitChange = (newLimit: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      limit: parseInt(newLimit),
+      page: 1,
+    }));
+  };
 
   return (
     <div className='container mx-auto px-4 py-12'>
@@ -72,25 +99,52 @@ export default function BlogPage() {
             ))}
           </div>
 
-          {/* <div className='flex justify-center gap-4 mt-8'>
-            <Button
-              variant='outline'
-              disabled={pagination.page <= 1}
-              onClick={() => fetchBlogs(pagination.page - 1)}
-            >
-              Previous
-            </Button>
-            <span className='flex items-center text-gray-400'>
-              Page {pagination.page} of {pagination.totalPages}
-            </span>
-            <Button
-              variant='outline'
-              disabled={!pagination.hasMore}
-              onClick={() => fetchBlogs(pagination.page + 1)}
-            >
-              Next
-            </Button>
-          </div> */}
+          {/* Pagination Controls */}
+          <div className='mt-8 flex items-center justify-between'>
+            <div className='flex items-center gap-2'>
+              <span className='text-sm text-muted-foreground'>
+                Showing {blogs.length} of {pagination.total} items
+              </span>
+
+              <Select
+                value={filters.limit.toString()}
+                onValueChange={handleLimitChange}
+              >
+                <SelectTrigger className='w-[100px]'>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {PAGE_SIZE_OPTIONS.map((size) => (
+                    <SelectItem key={size} value={size.toString()}>
+                      {size} per page
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className='flex items-center gap-2'>
+              <Button
+                variant='outline'
+                disabled={filters.page <= 1}
+                onClick={() => handlePageChange(filters.page - 1)}
+              >
+                Previous
+              </Button>
+
+              <span className='text-sm text-muted-foreground'>
+                Page {filters.page} of {pagination.totalPages}
+              </span>
+
+              <Button
+                variant='outline'
+                disabled={!pagination.hasMore}
+                onClick={() => handlePageChange(filters.page + 1)}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
         </>
       )}
     </div>
