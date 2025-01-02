@@ -213,7 +213,7 @@ function ContactForm() {
         className='text-center max-w-3xl mx-auto mb-16'
       >
         <h1 className='text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent'>
-          Let's Work Together
+          Let&apos;s Work Together
         </h1>
         <p className='text-gray-300 text-lg'>
           Have a project in mind? Looking to collaborate? Or just want to say
