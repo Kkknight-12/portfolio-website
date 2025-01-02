@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { BlogPostFilters } from '@/components/blog/BlogFilter';
 
 const PAGE_SIZE_OPTIONS = [9, 12, 15];
 
@@ -87,6 +88,14 @@ export default function BlogPage() {
         </p>
       </motion.div>
 
+      {/* Filter */}
+      <BlogPostFilters
+        filters={filters}
+        onFilterChange={(newFilters) => {
+          setFilters({ ...newFilters, page: 1 });
+        }}
+      />
+
       {loading ? (
         <div className='flex justify-center'>
           <Loader2 className='h-8 w-8 animate-spin' />
@@ -108,7 +117,14 @@ export default function BlogPage() {
 
               <Select
                 value={filters.limit.toString()}
-                onValueChange={handleLimitChange}
+                // onValueChange={handleLimitChange}
+                onValueChange={(value) =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    limit: parseInt(value),
+                    page: 1,
+                  }))
+                }
               >
                 <SelectTrigger className='w-[100px]'>
                   <SelectValue />
