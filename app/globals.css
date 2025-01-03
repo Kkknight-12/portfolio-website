@@ -2,41 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  /* font-family: 'Roboto', sans-serif; */
-  /* font-family: 'Comic Neue', cursive; */
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
 }
 
-/* .borel-font {
-  font-family: 'Borel', cursive;
-} */
-
-@layer components {
-  .text-glow {
-    text-shadow: 0 0 4rem rgb(192 219 255 / 30%),
-      0 0 1rem rgb(167 139 250 / 30%);
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
   }
+}
 
-  .code-effect::before {
-    content: '.';
-    @apply text-gray-50;
-  }
-
-  .code-effect::after {
-    content: '()';
-    @apply text-gray-50;
-  }
-
-  .react-effect::before {
-    content: '<';
-    @apply text-gray-50;
-  }
-  .react-effect::after {
-    content: '/>';
-    @apply text-gray-50 ml-2;
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
   }
 }
 
@@ -103,4 +85,32 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+/* Add these styles to your globals.css */
+.shiki-code-block {
+  @apply bg-zinc-950;
+}
+
+.shiki-code-block pre {
+  @apply m-0;
+  @apply py-5;
+}
+
+.shiki-code-block code {
+  @apply grid;
+  counter-reset: line;
+}
+
+.shiki-code-block code > span {
+  @apply px-4 min-h-[1.5rem] leading-6;
+}
+
+.shiki-code-block code > span::before {
+  counter-increment: line;
+  content: counter(line);
+  @apply inline-block w-4 mr-4 text-zinc-500 text-right;
+}
+
+.shiki-code-block code > span:hover {
+  @apply bg-zinc-900;
 }
