@@ -66,4 +66,13 @@ export const analyticsService = {
     );
     return response.data;
   },
+
+  /**
+   * Track a new blog view
+   * @param blogId - The blog post ID
+   */
+  trackBlogView: async (blogId: string): Promise<ApiResponse<void>> => {
+    const response = await api.post(`/analytics/track/${blogId}`);
+    return response.data;
+  },
 };

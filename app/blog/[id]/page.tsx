@@ -13,13 +13,14 @@ import { BlogPost, ContentBlock } from '@/types';
 import { ContentBlockRenderer } from '@/components/blog/content/content/ContentRenderer';
 import { BlogDetailHeader } from '@/components/blog/BlogDetailHeader';
 import { useAnalytics } from '@/hooks/useAnalytics';
-import { blogService } from '@/services';
+import { analyticsService, blogService } from '@/services';
 
 interface BlogDetailProps {
   params: {
     id: string;
   };
 }
+
 
 
 export default function BlogDetail({ params }: BlogDetailProps) {
@@ -29,6 +30,11 @@ export default function BlogDetail({ params }: BlogDetailProps) {
   const [blog, setBlog] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Track view when component mounts
+    analyticsService.trackBlogView(params.id);
+  }, [params.id]);
 
   useEffect(() => {
     const fetchBlog = async () => {
