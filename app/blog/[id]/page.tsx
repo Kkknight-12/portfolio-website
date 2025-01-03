@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { BlogPost, ContentBlock } from '@/types';
 import { ContentBlockRenderer } from '@/components/blog/content/content/ContentRenderer';
 import { BlogDetailHeader } from '@/components/blog/BlogDetailHeader';
+import { useAnalytics } from '@/hooks/useAnalytics';
 import { blogService } from '@/services';
 
 interface BlogDetailProps {
@@ -20,7 +21,11 @@ interface BlogDetailProps {
   };
 }
 
+
 export default function BlogDetail({ params }: BlogDetailProps) {
+  const { data: analyticsData, error: analyticsError } = useAnalytics(
+    params.id
+  );
   const [blog, setBlog] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -71,7 +76,7 @@ export default function BlogDetail({ params }: BlogDetailProps) {
         <BlogDetailHeader
           title={blog.title}
           author={blog.author}
-          views={blog.metadata.views}
+          views={analyticsData?.totalViews!}
           categories={blog.categories}
         />
 
