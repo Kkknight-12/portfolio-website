@@ -1,3 +1,5 @@
+// Core content block
+
 export interface ContentBlock {
   type: ContentBlockType;
   data:
@@ -8,6 +10,12 @@ export interface ContentBlock {
     | CalloutBlockData;
   order: number;
 }
+
+export interface BaseBlock {
+  type: ContentBlockType;
+  order: number;
+}
+
 export enum BlogStatus {
   DRAFT = 'draft',
   PUBLISHED = 'published',
@@ -85,8 +93,6 @@ export type Styles =
   | 'success'
   | 'info';
 
-
-
 export enum SandboxTemplate {
   VANILLA = 'vanilla',
   REACT = 'react',
@@ -154,3 +160,89 @@ export interface SandboxCodeData {
 // -----------------------------------------------------------------------------
 
 export type CodeBlockData = SimpleCodeData | SandboxCodeData;
+
+// -----------------------------------------------------------------------------
+
+// Content Block
+
+// Block Implementation Types
+export interface ParagraphBlock extends BaseBlock {
+  data: ParagraphBlockData;
+}
+
+export interface CodeBlock extends BaseBlock {
+  data: CodeBlockData;
+}
+
+export interface ImageBlock extends BaseBlock {
+  data: ImageBlockData;
+}
+export interface ListBlock extends BaseBlock {
+  data: ListBlockData;
+}
+
+export interface CalloutBlock extends BaseBlock {
+  data: CalloutBlockData;
+}
+
+// -----------------------------------------------------------------------------
+// Type Guards
+export const isParagraphBlock = (
+  block: ContentBlock
+): block is ContentBlock & { data: ParagraphBlockData } => {
+  return block.type === 'paragraph';
+};
+
+export const isCodeBlock = (
+  block: ContentBlock
+): block is ContentBlock & { data: CodeBlockData } => {
+  return block.type === 'code';
+};
+
+export const isImageBlock = (
+  block: ContentBlock
+): block is ContentBlock & { data: ImageBlockData } => {
+  return block.type === 'image';
+};
+
+export const isListBlock = (
+  block: ContentBlock
+): block is ContentBlock & { data: ListBlockData } => {
+  return block.type === 'list';
+};
+
+export const isCalloutBlock = (
+  block: ContentBlock
+): block is ContentBlock & { data: CalloutBlockData } => {
+  return block.type === 'callout';
+};
+
+export function isParagraphData(
+  content: ContentBlock
+): content is { type: 'paragraph'; data: ParagraphBlockData; order: number } {
+  return content.type === 'paragraph';
+}
+
+export function isCodeData(
+  content: ContentBlock
+): content is { type: 'code'; data: CodeBlockData; order: number } {
+  return content.type === 'code';
+}
+
+export function isImageData(
+  content: ContentBlock
+): content is { type: 'image'; data: ImageBlockData; order: number } {
+  return content.type === 'image';
+}
+
+export function isListData(
+  content: ContentBlock
+): content is { type: 'list'; data: ListBlockData; order: number } {
+  return content.type === 'list';
+}
+
+export function isCalloutData(
+  content: ContentBlock
+): content is { type: 'callout'; data: CalloutBlockData; order: number } {
+  return content.type === 'callout';
+}

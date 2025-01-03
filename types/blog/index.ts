@@ -1,5 +1,5 @@
 // types/blog/index.ts
-// export * from './content';
+export * from './content';
 // export * from './form';
 // export * from './model';
 export * from './api';
