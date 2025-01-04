@@ -1,4 +1,3 @@
-// components/blog/content/blocks/ParagraphRenderer.tsx
 import React from 'react';
 import { RoughNotation, RoughNotationGroup } from 'react-rough-notation';
 import { cn } from '@/lib/utils';
@@ -19,71 +18,86 @@ const tagStyles: Record<HtmlTagType, string> = {
   span: 'inline-block',
 };
 
+/**
+ * Creates a regex pattern for method names with word boundaries
+ * Handles both simple method calls and full syntax
+ * @example some() -> /\bsome\(\)\b/
+ * @example array.some(x => x > 5) -> matches the full pattern
+ */
+const createMethodPattern = (methodName: string): RegExp => {
+  // Match the exact method name with () and ensure it's a standalone word
+  // Look behind for word boundary or whitespace
+  // Look ahead for word boundary or whitespace
+  return new RegExp(`(?<=[\\s]|^)${methodName}\\(\\)(?=[\\s]|$|[.,!?])`, 'g');
+};
+
+/**
+ * Enhanced segment processor that respects code blocks and method calls
+ */
+const processAnnotations = (
+  content: string,
+  annotations: Annotation[]
+): Array<{
+  text: string;
+  start: number;
+  end: number;
+  annotations: Annotation[];
+}> => {
+  if (!annotations.length) {
+    return [{ text: content, start: 0, end: content.length, annotations: [] }];
+  }
+
+  // Find all boundaries including code blocks
+  const boundaries = new Set<number>();
+  boundaries.add(0);
+  boundaries.add(content.length);
+
+  annotations.forEach((annotation) => {
+    // Create appropriate regex based on annotation type
+    const regex = createMethodPattern(annotation.regex);
+    let match;
+
+    while ((match = regex.exec(content)) !== null) {
+      boundaries.add(match.index);
+      boundaries.add(match.index + match[0].length);
+    }
+  });
+
+  const sortedBoundaries = Array.from(boundaries).sort((a, b) => a - b);
+  const segments: Array<{
+    text: string;
+    start: number;
+    end: number;
+    annotations: Annotation[];
+  }> = [];
+
+  // Process segments with their annotations
+  for (let i = 0; i < sortedBoundaries.length - 1; i++) {
+    const start = sortedBoundaries[i];
+    const end = sortedBoundaries[i + 1];
+    const segmentText = content.slice(start, end);
+
+    const appliedAnnotations = annotations.filter((annotation) => {
+      const regex = createMethodPattern(annotation.regex);
+      return regex.test(segmentText);
+    });
+
+    segments.push({
+      text: segmentText,
+      start,
+      end,
+      annotations: appliedAnnotations,
+    });
+  }
+
+  return segments;
+};
+
 export const ParagraphRenderer: React.FC<ParagraphRendererProps> = ({
   block,
 }) => {
   const { text, htmlTag: Tag, annotations = [], brackets = [] } = block.data;
   const baseStyles = tagStyles[Tag];
-
-  // Process text into segments with annotations
-  const processAnnotations = (
-    content: string,
-    annotations: Annotation[]
-  ): Array<{
-    text: string;
-    start: number;
-    end: number;
-    annotations: Annotation[];
-  }> => {
-    if (!annotations.length) {
-      return [
-        { text: content, start: 0, end: content.length, annotations: [] },
-      ];
-    }
-
-    // Find segment boundaries
-    const boundaries = new Set<number>();
-    boundaries.add(0);
-    boundaries.add(content.length);
-
-    annotations.forEach((annotation) => {
-      const regex = new RegExp(annotation.regex, 'g');
-      let match;
-      while ((match = regex.exec(content)) !== null) {
-        boundaries.add(match.index);
-        boundaries.add(match.index + match[0].length);
-      }
-    });
-
-    const sortedBoundaries = Array.from(boundaries).sort((a, b) => a - b);
-    const segments: Array<{
-      text: string;
-      start: number;
-      end: number;
-      annotations: Annotation[];
-    }> = [];
-
-    // Create segments with their annotations
-    for (let i = 0; i < sortedBoundaries.length - 1; i++) {
-      const start = sortedBoundaries[i];
-      const end = sortedBoundaries[i + 1];
-      const segmentText = content.slice(start, end);
-
-      const appliedAnnotations = annotations.filter((annotation) => {
-        const regex = new RegExp(annotation.regex);
-        return regex.test(content.slice(start, end));
-      });
-
-      segments.push({
-        text: segmentText,
-        start,
-        end,
-        annotations: appliedAnnotations,
-      });
-    }
-
-    return segments;
-  };
 
   // Render annotated segment recursively
   const renderAnnotatedSegment = (
@@ -129,13 +143,12 @@ export const ParagraphRenderer: React.FC<ParagraphRendererProps> = ({
     return renderWithAnnotations(segment.text, segment.annotations, index);
   };
 
-  // Process segments
+  // Process and render segments
   const segments = processAnnotations(text, annotations);
 
   return (
     <RoughNotationGroup show={true}>
       <Tag className={cn(baseStyles, 'relative paragraph-block')}>
-        {/* Bracket decorations if any */}
         {brackets.length > 0 ? (
           <RoughNotation
             type='bracket'
