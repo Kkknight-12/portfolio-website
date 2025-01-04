@@ -21,8 +21,6 @@ interface BlogDetailProps {
   };
 }
 
-
-
 export default function BlogDetail({ params }: BlogDetailProps) {
   const { data: analyticsData, error: analyticsError } = useAnalytics(
     params.id
@@ -92,7 +90,7 @@ export default function BlogDetail({ params }: BlogDetailProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         > */}
-        <Card className='p-8'>
+        <Card className='w-full max-w-4xl mx-auto bg-white backdrop-blur-sm dark:bg-fuchsia-200/10 p-8 border-0'>
           <ContentBlocks blocks={blog.content} />
         </Card>
         {/* </motion.div> */}
