@@ -24,11 +24,24 @@ const tagStyles: Record<HtmlTagType, string> = {
  * @example some() -> /\bsome\(\)\b/
  * @example array.some(x => x > 5) -> matches the full pattern
  */
-const createMethodPattern = (methodName: string): RegExp => {
-  // Match the exact method name with () and ensure it's a standalone word
-  // Look behind for word boundary or whitespace
-  // Look ahead for word boundary or whitespace
-  return new RegExp(`(?<=[\\s]|^)${methodName}\\(\\)(?=[\\s]|$|[.,!?])`, 'g');
+// const createMethodPattern = (methodName: string): RegExp => {
+//   // Match the exact method name with () and ensure it's a standalone word
+//   // Look behind for word boundary or whitespace
+//   // Look ahead for word boundary or whitespace
+//   return new RegExp(`(?<=[\\s]|^)${methodName}\\(\\)(?=[\\s]|$|[.,!?])`, 'g');
+// };
+const createMethodPattern = (pattern: string): RegExp => {
+  // Check if the pattern includes parentheses
+  const hasParentheses = pattern.includes('()');
+
+  if (hasParentheses) {
+    // For method calls like some(), find(), etc.
+    const methodName = pattern.replace('()', '');
+    return new RegExp(`\\b${methodName}\\(\\)\\b`, 'g');
+  } else {
+    // For normal text matches, use word boundaries
+    return new RegExp(`\\b${pattern}\\b`, 'g');
+  }
 };
 
 /**
