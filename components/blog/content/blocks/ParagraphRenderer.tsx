@@ -8,11 +8,11 @@ interface ParagraphRendererProps {
 }
 
 const tagStyles: Record<HtmlTagType, string> = {
-  h1: 'text-4xl font-bold mb-6',
-  h2: 'text-3xl font-bold mb-5',
-  h3: 'text-2xl font-bold mb-4',
-  h4: 'text-xl font-bold mb-3',
-  h5: 'text-lg font-bold mb-2',
+  h1: 'text-4xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent',
+  h2: 'text-3xl font-bold mb-5 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent',
+  h3: 'text-2xl font-bold mb-4 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent',
+  h4: 'text-xl font-bold mb-3 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent',
+  h5: 'text-lg font-bold mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent',
   p: 'text-base leading-7 mb-4',
   div: 'mb-4',
   span: 'inline-block',

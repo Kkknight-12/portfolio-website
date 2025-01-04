@@ -190,7 +190,7 @@ export const ListRenderer: React.FC<ListRendererProps> = ({ block }) => {
     const segments = processTextSegments(text, annotations);
 
     return (
-      <div className='mb-4 text-gray-700'>
+      <div className='text-xl font-bold mb-4 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent'>
         {segments.map((segment, index) =>
           renderAnnotatedSegment(segment, index)
         )}
