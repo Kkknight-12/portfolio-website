@@ -63,7 +63,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ content }) => {
   if (headings.length === 0) return null;
 
   return (
-    <div className='w-64 sticky top-24 ml-8 p-4 bg-white/5 backdrop-blur-sm rounded-xl border-white/10'>
+    <div className='ml-8 p-4 bg-white/5 backdrop-blur-sm rounded-xl border-white/10'>
       <h3 className='text-lg font-semibold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent'>
         Table of Contents
       </h3>
