@@ -1,9 +1,9 @@
-"use client";
+// "use client";
 
-import createCache from "@emotion/cache";
+// import createCache from "@emotion/cache";
 
-export default function createEmotionCache() {
-  return createCache({ key: "css" });
-}
+// export default function createEmotionCache() {
+//   return createCache({ key: "css" });
+// }
 
-export const cache = createEmotionCache();
+// export const cache = createEmotionCache();
