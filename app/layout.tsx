@@ -1,4 +1,3 @@
-import { SettingContext } from '@/_context/SettingContext';
 import Navbar from '@/components/Navbar';
 import type { Metadata } from 'next';
 import { Arima, Inter } from 'next/font/google';
@@ -64,24 +63,22 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${arima.className} ${inter.className}`}>
-        <SettingContext>
-          <ThemeProvider
-            attribute='class'
-            defaultTheme='system'
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Navbar />
-            <LayoutWrapper>
-              {/* bg blur effect */}
-              <div className='bg-[#fbe2e3] dark:bg-[#946283] absolute top-[-6rem] -z-10 right-[11rem] h-[31.25rem] w-[31.25rem] rounded-full blur-[12rem] sm:w-[68.75rem]' />
-              {/*  */}
-              <div className='bg-[#dbd7fb] dark:bg-[#595580] absolute top-[-1rem] -z-10 left-[-35rem] h-[50rem] w-[31.25rem] rounded-full blur-[12rem] sm:w-[68.75rem] md:left-[-33rem] lg:left-[-28rem] xl:left-[-15rem] 2xl:left-[-5rem]' />
-              {children}
-            </LayoutWrapper>
-            <Toaster />
-          </ThemeProvider>
-        </SettingContext>
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='system'
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Navbar />
+          <LayoutWrapper>
+            {/* bg blur effect */}
+            <div className='bg-[#fbe2e3] dark:bg-[#946283] absolute top-[-6rem] -z-10 right-[11rem] h-[31.25rem] w-[31.25rem] rounded-full blur-[12rem] sm:w-[68.75rem]' />
+            {/*  */}
+            <div className='bg-[#dbd7fb] dark:bg-[#595580] absolute top-[-1rem] -z-10 left-[-35rem] h-[50rem] w-[31.25rem] rounded-full blur-[12rem] sm:w-[68.75rem] md:left-[-33rem] lg:left-[-28rem] xl:left-[-15rem] 2xl:left-[-5rem]' />
+            {children}
+          </LayoutWrapper>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
