@@ -35,9 +35,10 @@ const createMethodPattern = (pattern: string): RegExp => {
   const hasParentheses = pattern.includes('()');
 
   if (hasParentheses) {
-    // For method calls like some(), find(), etc.
-    const methodName = pattern.replace('()', '');
-    return new RegExp(`\\b${methodName}\\(\\)\\b`, 'g');
+    //   // For method calls like some(), find(), etc.
+    //   const methodName = pattern.replace('()', '');
+    //   return new RegExp(`\\b${methodName}\\(\\)\\b`, 'g');
+    return new RegExp(`(?<=[\\s]|^)${pattern}\\(\\)(?=[\\s]|$|[.,!?])`, 'g');
   } else {
     // For normal text matches, use word boundaries
     return new RegExp(`\\b${pattern}\\b`, 'g');
@@ -144,9 +145,11 @@ export const ParagraphRenderer: React.FC<ParagraphRendererProps> = ({
               : currentAnnotation.type
           }
           show={currentAnnotation.show}
-          color={currentAnnotation.color}
+          color={
+            currentAnnotation.color === 'black' ? 'violet' : 'currentColor'
+          }
           brackets={currentAnnotation.brackets}
-          padding={4}
+          padding={1}
         >
           {renderWithAnnotations(text, rest, currentIndex + 1)}
         </RoughNotation>
