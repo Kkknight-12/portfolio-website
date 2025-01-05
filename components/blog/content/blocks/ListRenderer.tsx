@@ -8,6 +8,73 @@ interface ListRendererProps {
   block: ListBlock;
 }
 
+const createMethodPattern = (methodName: string): RegExp => {
+  // return new RegExp(`${methodName}\\(\\)`, 'g');
+  return new RegExp(`\\b${methodName}\\b`, 'g');
+};
+
+/**
+ * Enhanced segment processor that respects code blocks and method calls
+ */
+const processTextSegments = (
+  content: string,
+  annotations: Annotation[]
+): Array<{
+  text: string;
+  start: number;
+  end: number;
+  annotations: Annotation[];
+}> => {
+  if (!annotations.length) {
+    return [{ text: content, start: 0, end: content.length, annotations: [] }];
+  }
+
+  // Find all boundaries including code blocks
+  const boundaries = new Set<number>();
+  boundaries.add(0);
+  boundaries.add(content.length);
+
+  annotations.forEach((annotation) => {
+    // Create appropriate regex based on annotation type
+    const regex = createMethodPattern(annotation.regex);
+    let match;
+
+    while ((match = regex.exec(content)) !== null) {
+      boundaries.add(match.index);
+      boundaries.add(match.index + match[0].length);
+    }
+  });
+
+  const sortedBoundaries = Array.from(boundaries).sort((a, b) => a - b);
+  const segments: Array<{
+    text: string;
+    start: number;
+    end: number;
+    annotations: Annotation[];
+  }> = [];
+
+  // Process segments with their annotations
+  for (let i = 0; i < sortedBoundaries.length - 1; i++) {
+    const start = sortedBoundaries[i];
+    const end = sortedBoundaries[i + 1];
+    const segmentText = content.slice(start, end);
+
+    const appliedAnnotations = annotations.filter((annotation) => {
+      const regex = createMethodPattern(annotation.regex);
+      return regex.test(segmentText);
+    });
+
+    segments.push({
+      text: segmentText,
+      start,
+      end,
+      annotations: appliedAnnotations,
+    });
+  }
+
+  return segments;
+};
+
 /**
  * ListRenderer Component
  *
@@ -24,6 +91,7 @@ interface ListRendererProps {
 export const ListRenderer: React.FC<ListRendererProps> = ({ block }) => {
   const { items, text, annotations = [], style = 'unordered' } = block.data;
   console.log('ListRenderer ', block.data);
+
   /**
    * Processes text to find annotation matches
    * Returns segments with their applicable annotations
@@ -31,93 +99,93 @@ export const ListRenderer: React.FC<ListRendererProps> = ({ block }) => {
    * @param text - Text to process
    * @param annotations - Array of annotations to apply
    */
-  const processTextSegments = useCallback(
-    (content: string, annotations: Annotation[]) => {
-      if (!annotations.length) {
-        return [{ text: content, annotations: [] }];
-      }
+  // const processTextSegments = useCallback(
+  //   (content: string, annotations: Annotation[]) => {
+  //     if (!annotations.length) {
+  //       return [{ text: content, annotations: [] }];
+  //     }
 
-      // Find all annotation boundaries
-      type Boundary = {
-        index: number;
-        isStart: boolean;
-        annotation: Annotation;
-      };
+  //     // Find all annotation boundaries
+  //     type Boundary = {
+  //       index: number;
+  //       isStart: boolean;
+  //       annotation: Annotation;
+  //     };
 
-      const boundaries: Boundary[] = [];
+  //     const boundaries: Boundary[] = [];
 
-      annotations.forEach((annotation) => {
-        const regex = new RegExp(annotation.regex, 'g');
-        let match;
+  //     annotations.forEach((annotation) => {
+  //       const regex = new RegExp(annotation.regex, 'g');
+  //       let match;
 
-        while ((match = regex.exec(content)) !== null) {
-          boundaries.push(
-            {
-              index: match.index,
-              isStart: true,
-              annotation,
-            },
-            {
-              index: match.index + match[0].length,
-              isStart: false,
-              annotation,
-            }
-          );
-        }
-      });
+  //       while ((match = regex.exec(content)) !== null) {
+  //         boundaries.push(
+  //           {
+  //             index: match.index,
+  //             isStart: true,
+  //             annotation,
+  //           },
+  //           {
+  //             index: match.index + match[0].length,
+  //             isStart: false,
+  //             annotation,
+  //           }
+  //         );
+  //       }
+  //     });
 
-      // Sort boundaries by index
-      boundaries.sort((a, b) => {
-        if (a.index !== b.index) return a.index - b.index;
-        return a.isStart ? -1 : 1;
-      });
+  //     // Sort boundaries by index
+  //     boundaries.sort((a, b) => {
+  //       if (a.index !== b.index) return a.index - b.index;
+  //       return a.isStart ? -1 : 1;
+  //     });
 
-      if (!boundaries.length) {
-        return [{ text: content, annotations: [] }];
-      }
+  //     if (!boundaries.length) {
+  //       return [{ text: content, annotations: [] }];
+  //     }
 
-      // Create segments
-      const segments: Array<{
-        text: string;
-        annotations: Annotation[];
-      }> = [];
+  //     // Create segments
+  //     const segments: Array<{
+  //       text: string;
+  //       annotations: Annotation[];
+  //     }> = [];
 
-      let currentIndex = 0;
-      const activeAnnotations: Annotation[] = [];
+  //     let currentIndex = 0;
+  //     const activeAnnotations: Annotation[] = [];
 
-      boundaries.forEach((boundary) => {
-        if (currentIndex < boundary.index) {
-          segments.push({
-            text: content.slice(currentIndex, boundary.index),
-            annotations: [...activeAnnotations],
-          });
-        }
+  //     boundaries.forEach((boundary) => {
+  //       if (currentIndex < boundary.index) {
+  //         segments.push({
+  //           text: content.slice(currentIndex, boundary.index),
+  //           annotations: [...activeAnnotations],
+  //         });
+  //       }
 
-        if (boundary.isStart) {
-          activeAnnotations.push(boundary.annotation);
-        } else {
-          const index = activeAnnotations.findIndex(
-            (a) => a === boundary.annotation
-          );
-          if (index !== -1) {
-            activeAnnotations.splice(index, 1);
-          }
-        }
+  //       if (boundary.isStart) {
+  //         activeAnnotations.push(boundary.annotation);
+  //       } else {
+  //         const index = activeAnnotations.findIndex(
+  //           (a) => a === boundary.annotation
+  //         );
+  //         if (index !== -1) {
+  //           activeAnnotations.splice(index, 1);
+  //         }
+  //       }
 
-        currentIndex = boundary.index;
-      });
+  //       currentIndex = boundary.index;
+  //     });
 
-      if (currentIndex < content.length) {
-        segments.push({
-          text: content.slice(currentIndex),
-          annotations: [...activeAnnotations],
-        });
-      }
+  //     if (currentIndex < content.length) {
+  //       segments.push({
+  //         text: content.slice(currentIndex),
+  //         annotations: [...activeAnnotations],
+  //       });
+  //     }
 
-      return segments;
-    },
-    []
-  );
+  //     return segments;
+  //   },
+  //   []
+  // );
 
   /**
    * Renders a text segment with its annotations
