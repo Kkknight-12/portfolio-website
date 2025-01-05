@@ -170,7 +170,7 @@ export const ParagraphRenderer: React.FC<ParagraphRendererProps> = ({
             type='bracket'
             brackets={brackets}
             show={true}
-            color='black'
+            color='violet'
             strokeWidth={2}
           >
             {segments.map((segment, index) =>
