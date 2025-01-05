@@ -85,7 +85,7 @@ export default function BlogDetail({ params }: BlogDetailProps) {
             views={analyticsData?.totalViews!}
             categories={blog.categories}
           />
-          <Card className='w-full max-w-4xl mx-auto  dark:bg-slate-800/60 p-8 border-0'>
+          <Card className='w-full max-w-4xl mx-auto bg-white backdrop-blur-sm dark:bg-fuchsia-200/10 p-8 border-0'>
             <ContentBlocks blocks={blog.content} />
           </Card>
         </div>
