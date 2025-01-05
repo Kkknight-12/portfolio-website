@@ -14,6 +14,7 @@ import { ContentBlockRenderer } from '@/components/blog/content/content/ContentR
 import { BlogDetailHeader } from '@/components/blog/BlogDetailHeader';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { analyticsService, blogService } from '@/services';
+import TableOfContents from '@/components/blog/content/TableOfContents';
 
 interface BlogDetailProps {
   params: {
@@ -76,7 +77,7 @@ export default function BlogDetail({ params }: BlogDetailProps) {
       </Link>
 
       {/* Main Content */}
-      <div className='max-w-4xl mx-auto px-4 py-8'>
+      <div className='flex gap-8 mx-auto px-4 py-8'>
         <BlogDetailHeader
           title={blog.title}
           author={blog.author}
@@ -84,16 +85,16 @@ export default function BlogDetail({ params }: BlogDetailProps) {
           categories={blog.categories}
         />
 
-        {/* <motion.div
-          className='space-y-6'
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        > */}
-        <Card className='w-full max-w-4xl mx-auto bg-white backdrop-blur-sm dark:bg-fuchsia-200/10 p-8 border-0'>
-          <ContentBlocks blocks={blog.content} />
-        </Card>
-        {/* </motion.div> */}
+        <div className='flex-1'>
+          <Card className='w-full max-w-4xl mx-auto bg-white backdrop-blur-sm dark:bg-fuchsia-200/10 p-8 border-0'>
+            <ContentBlocks blocks={blog.content} />
+          </Card>
+        </div>
+
+        {/* Table of Contents */}
+        <aside className='hidden lg:block'>
+          <TableOfContents content={blog.content} />
+        </aside>
       </div>
     </div>
   );
