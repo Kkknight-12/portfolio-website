@@ -78,23 +78,30 @@ export default function BlogDetail({ params }: BlogDetailProps) {
 
       {/* Main Content */}
       <div className='flex gap-8 mx-auto px-4 py-8'>
-        <BlogDetailHeader
-          title={blog.title}
-          author={blog.author}
-          views={analyticsData?.totalViews!}
-          categories={blog.categories}
-        />
-
         <div className='flex-1'>
-          <Card className='w-full max-w-4xl mx-auto bg-white backdrop-blur-sm dark:bg-fuchsia-200/10 p-8 border-0'>
+          <BlogDetailHeader
+            title={blog.title}
+            author={blog.author}
+            views={analyticsData?.totalViews!}
+            categories={blog.categories}
+          />
+          <Card className='w-full max-w-4xl mx-auto  dark:bg-slate-800/60 p-8 border-0'>
             <ContentBlocks blocks={blog.content} />
           </Card>
         </div>
 
         {/* Table of Contents */}
-        <aside className='hidden lg:block'>
-          <TableOfContents content={blog.content} />
-        </aside>
+        <div className='hidden lg:block w-[280px] relative'>
+          <div className='sticky top-[260px]'>
+            {' '}
+            {/* Adjust top value based on your navbar height */}
+            <aside className='overflow-y-auto max-h-[calc(100vh-120px)]'>
+              {' '}
+              {/* Adjust max-height based on spacing needs */}
+              <TableOfContents content={blog.content} />
+            </aside>
+          </div>
+        </div>
       </div>
     </div>
   );
