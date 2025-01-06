@@ -77,18 +77,18 @@ export default function BlogDetail({ params }: BlogDetailProps) {
       </Link>
 
       {/* Main Content */}
-      <div className='flex gap-8 mx-auto px-4 py-8'>
-        <div className='flex-1'>
-          <BlogDetailHeader
+      <div className='flex gap-8'>
+        {/* <div className='flex-1'> */}
+        <BlogDetailHeader
             title={blog.title}
             author={blog.author}
             views={analyticsData?.totalViews!}
             categories={blog.categories}
           />
-          <Card className='w-full  dark:bg-slate-800/60 p-8 border-0'>
-            <ContentBlocks blocks={blog.content} />
-          </Card>
-        </div>
+        <Card className='w-full  dark:bg-slate-800/60 p-8 border-0'>
+          <ContentBlocks blocks={blog.content} />
+        </Card>
+        {/* </div> */}
 
         {/* Table of Contents */}
         <div className='hidden lg:block w-[280px] relative'>
