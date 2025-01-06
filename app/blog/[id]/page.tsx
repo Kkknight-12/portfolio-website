@@ -78,11 +78,11 @@ export default function BlogDetail({ params }: BlogDetailProps) {
 
       {/* Main Content */}
       <div className='flex gap-8'>
-        <div className='flex-col gap-8'>
+        <div className='flex w-full flex-col gap-8'>
           <BlogDetailHeader
             title={blog.title}
             author={blog.author}
-            views={10}
+            views={analyticsData?.totalViews!}
             categories={blog.categories}
           />
           <Card className='w-full max-w-4xl  dark:bg-slate-800/60 p-8 border-0'>
