@@ -18,7 +18,7 @@ import {
 import { useRouter, useSearchParams } from 'next/navigation';
 import { BlogPostFilters } from '@/components/blog/BlogFilter';
 
-const PAGE_SIZE_OPTIONS = [9, 12, 15];
+const PAGE_SIZE_OPTIONS = [10, 20, 50];
 
 export default function BlogPage() {
   const router = useRouter();
@@ -65,13 +65,14 @@ export default function BlogPage() {
     setFilters((prev) => ({ ...prev, page: newPage }));
   };
 
-  const handleLimitChange = (newLimit: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      limit: parseInt(newLimit),
-      page: 1,
-    }));
-  };
+  // const handleLimitChange = (newLimit: string) => {
+  //   setFilters((prev) => ({
+  //     ...prev,
+  //     limit: parseInt(newLimit),
+  //     page: 1,
+  //   }));
+  // };
+  // console.log('filters ', filters);
 
   return (
     <div className='container mx-auto px-4 py-12'>
@@ -109,7 +110,7 @@ export default function BlogPage() {
           </div>
 
           {/* Pagination Controls */}
-          <div className='mt-8 flex items-center justify-between'>
+          <div className='mt-8 flex flex-col md:flex-row gap-y-4 items-center justify-between'>
             <div className='flex items-center gap-2'>
               <span className='text-sm text-muted-foreground'>
                 Showing {blogs.length} of {pagination.total} items
