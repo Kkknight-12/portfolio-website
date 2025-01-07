@@ -78,6 +78,28 @@
   }
 }
 
+@layer components {
+  .text-glow {
+    text-shadow: 0 0 4rem rgb(192 219 255 / 30%),
+      0 0 1rem rgb(167 139 250 / 30%);
+  }
+  .code-effect::before {
+    content: '.';
+    @apply text-gray-50;
+  }
+  .code-effect::after {
+    content: '()';
+    @apply text-gray-50;
+  }
+  .react-effect::before {
+    content: '<';
+    @apply text-gray-50;
+  }
+  .react-effect::after {
+    content: '/>';
+    @apply text-gray-50 ml-2;
+  }
+}
 @layer base {
   * {
     @apply border-border;
