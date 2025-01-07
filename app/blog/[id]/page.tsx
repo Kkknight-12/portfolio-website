@@ -78,21 +78,21 @@ export default function BlogDetail({ params }: BlogDetailProps) {
 
       {/* Main Content */}
       <div className='flex gap-8'>
-        <div className='flex w-full flex-col gap-8'>
+        <div className='flex w-full flex-col gap-8 max-w-4xl'>
           <BlogDetailHeader
             title={blog.title}
             author={blog.author}
-            views={analyticsData?.totalViews!}
+            views={analyticsData?.totalViews || 0}
             categories={blog.categories}
           />
-          <Card className='w-full max-w-4xl  dark:bg-slate-800/60 p-8 border-0'>
+          <Card className='w-full dark:bg-slate-800/60 p-8 border-0'>
             <ContentBlocks blocks={blog.content} />
           </Card>
         </div>
 
         {/* Table of Contents */}
         <div className='hidden lg:block w-[280px] relative'>
-          <div className='sticky top-[260px]'>
+          <div className='sticky top-[237px]'>
             {' '}
             {/* Adjust top value based on your navbar height */}
             <aside className='overflow-y-auto max-h-[calc(100vh-120px)]'>

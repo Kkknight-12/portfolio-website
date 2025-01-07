@@ -20,7 +20,7 @@ export function BlogDetailHeader({
 }: BlogDetailHeaderProps) {
   return (
     <motion.div
-      className='bg-white dark:bg-gray-900 rounded-xl shadow-sm p-8 mb-8'
+      className='bg-white dark:bg-gray-900 rounded-xl shadow-sm p-8 mb-8 w-full'
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
     >
