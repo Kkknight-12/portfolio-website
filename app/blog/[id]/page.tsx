@@ -67,7 +67,7 @@ export default function BlogDetail({ params }: BlogDetailProps) {
   }
 
   return (
-    <div className='container mx-auto px-4 py-8'>
+    <>
       {/* Back Button */}
       <Link href='/blog'>
         <Button variant='ghost' className='mb-8 group'>
@@ -77,7 +77,7 @@ export default function BlogDetail({ params }: BlogDetailProps) {
       </Link>
 
       {/* Main Content */}
-      <div className='flex gap-8'>
+      <div className='flex gap-8 justify-center'>
         <div className='flex w-full flex-col gap-8 max-w-4xl'>
           <BlogDetailHeader
             title={blog.title}
@@ -92,7 +92,7 @@ export default function BlogDetail({ params }: BlogDetailProps) {
 
         {/* Table of Contents */}
         <div className='hidden lg:block w-[280px] relative'>
-          <div className='sticky top-[237px]'>
+          <div className='sticky top-[163px]'>
             {' '}
             {/* Adjust top value based on your navbar height */}
             <aside className='overflow-y-auto max-h-[calc(100vh-120px)]'>
@@ -103,7 +103,7 @@ export default function BlogDetail({ params }: BlogDetailProps) {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
