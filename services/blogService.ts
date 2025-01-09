@@ -25,10 +25,10 @@ export const blogService = {
     const params = new URLSearchParams();
     if (filters) {
       if (filters.search) params.append('search', filters.search);
-      if (filters.categories?.length)
+      if (filters.categories?.length) {
         params.append('categories', filters.categories.join(','));
-      if (filters.status && filters.status !== 'all')
-        params.append('status', filters.status);
+      }
+      params.append('status', filters.status || 'published');
       if (filters.page) params.append('page', filters.page.toString());
       if (filters.limit) params.append('limit', filters.limit.toString());
     }
