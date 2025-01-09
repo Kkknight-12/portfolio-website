@@ -36,7 +36,7 @@ export default function BlogPage() {
   const [filters, setFilters] = useState<BlogFilters>({
     search: searchParams.get('search') || '',
     categories: searchParams.get('categories')?.split(',') || [],
-    status: (searchParams.get('status') as BlogFilters['status']) || 'all',
+    status: 'published',
     page: Number(searchParams.get('page')) || 1,
     limit: Number(searchParams.get('limit')) || 10,
   });

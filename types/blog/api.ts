@@ -4,7 +4,7 @@ import { BlogStatus } from './content';
 
 export interface BlogFilters extends BaseFilters {
   categories: string[];
-  status: BlogStatus | 'all';
+  status: BlogStatus | 'published';
 }
 
 
