@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { ParagraphBlock, Annotation, HtmlTagType } from '@/types';
 
 interface ParagraphRendererProps {
-  block: ParagraphBlock & { id?: string };
+  block: ParagraphBlock;
 }
 
 const tagStyles: Record<HtmlTagType, string> = {

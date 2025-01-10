@@ -52,6 +52,7 @@ export interface ParagraphBlockData {
   brackets: DirectionType[];
   annotations: Annotation[];
   text: string;
+  id: string;
 }
 
 export interface ImageBlockData {
