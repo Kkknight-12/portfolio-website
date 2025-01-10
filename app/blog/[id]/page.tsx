@@ -15,6 +15,7 @@ import { BlogDetailHeader } from '@/components/blog/BlogDetailHeader';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { analyticsService, blogService } from '@/services';
 import TableOfContents from '@/components/blog/content/TableOfContents';
+import { HeadingProvider } from '@/_context/HeadingContext';
 
 interface BlogDetailProps {
   params: {
@@ -67,7 +68,7 @@ export default function BlogDetail({ params }: BlogDetailProps) {
   }
 
   return (
-    <>
+    <HeadingProvider>
       {/* Back Button */}
       <Link href='/blog'>
         <Button variant='ghost' className='mb-8 group'>
@@ -103,7 +104,7 @@ export default function BlogDetail({ params }: BlogDetailProps) {
           </div>
         </div>
       </div>
-    </>
+    </HeadingProvider>
   );
 }
 

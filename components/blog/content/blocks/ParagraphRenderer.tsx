@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { ParagraphBlock, Annotation, HtmlTagType } from '@/types';
 
 interface ParagraphRendererProps {
-  block: ParagraphBlock;
+  block: ParagraphBlock & { id?: string };
 }
 
 const tagStyles: Record<HtmlTagType, string> = {
@@ -110,7 +110,13 @@ const processAnnotations = (
 export const ParagraphRenderer: React.FC<ParagraphRendererProps> = ({
   block,
 }) => {
-  const { text, htmlTag: Tag, annotations = [], brackets = [] } = block.data;
+  const {
+    text,
+    htmlTag: Tag,
+    annotations = [],
+    brackets = [],
+    id,
+  } = block.data;
   const baseStyles = tagStyles[Tag];
 
   // Render annotated segment recursively
@@ -162,9 +168,16 @@ export const ParagraphRenderer: React.FC<ParagraphRendererProps> = ({
   // Process and render segments
   const segments = processAnnotations(text, annotations);
 
+  const props = Tag.startsWith('h')
+    ? {
+        id,
+        className: 'scroll-mt-20', // Adjust based on your navbar height
+      }
+    : {};
+
   return (
     <RoughNotationGroup show={true}>
-      <Tag className={cn(baseStyles, 'relative paragraph-block')}>
+      <Tag {...props} className={cn(baseStyles, 'relative paragraph-block')}>
         {brackets.length > 0 ? (
           <RoughNotation
             type='bracket'
