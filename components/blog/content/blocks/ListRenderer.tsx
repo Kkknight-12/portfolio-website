@@ -217,7 +217,13 @@ export const ListRenderer: React.FC<ListRendererProps> = ({ block }) => {
             key={`${index}-${depth}`}
             type={current.type == 'brackets' ? 'bracket' : current.type}
             show={current.show}
-            color={current.color === 'black' ? 'violet' : 'currentColor'}
+            color={
+              current.type === 'highlight' && current.color === 'black'
+                ? '#ee82ee61'
+                : current.color === 'black'
+                ? 'violet'
+                : 'currentColor'
+            }
             brackets={current.brackets}
             padding={4}
           >

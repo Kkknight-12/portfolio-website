@@ -152,7 +152,12 @@ export const ParagraphRenderer: React.FC<ParagraphRendererProps> = ({
           }
           show={currentAnnotation.show}
           color={
-            currentAnnotation.color === 'black' ? 'violet' : 'currentColor'
+            currentAnnotation.type === 'highlight' &&
+            currentAnnotation.color === 'black'
+              ? '#ee82ee61'
+              : currentAnnotation.color === 'black'
+              ? 'violet'
+              : 'currentColor'
           }
           brackets={currentAnnotation.brackets}
           padding={1}
