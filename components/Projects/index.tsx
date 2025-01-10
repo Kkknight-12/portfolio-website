@@ -62,6 +62,17 @@ import ProjectCard from './ProjectCard';
 import { Code2, Rocket } from 'lucide-react';
 import { useState } from 'react';
 
+interface sectionProps {
+  type: string;
+  title: string;
+  description: string;
+  website: string;
+  github: string;
+  image: string;
+  placeholder: string;
+  tags: string[];
+}
+
 export default function ProjectsPage() {
   // Add state for active filter
   const [activeFilter, setActiveFilter] = useState<string>('All');
@@ -104,10 +115,10 @@ export default function ProjectsPage() {
   ];
 
   // Filter projects function
-  const filterProjects = (projects: any[]) => {
-    if (activeFilter === 'All') return projects;
-    return projects.filter((project) =>
-      project.tags.some(
+  const filterProjects = (sections: sectionProps[]) => {
+    if (activeFilter === 'All') return sections;
+    return sections.filter((section) =>
+      section.tags.some(
         (tag) => tag.toLowerCase() === activeFilter.toLowerCase()
       )
     );
