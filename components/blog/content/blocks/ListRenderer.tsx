@@ -217,7 +217,7 @@ export const ListRenderer: React.FC<ListRendererProps> = ({ block }) => {
             key={`${index}-${depth}`}
             type={current.type == 'brackets' ? 'bracket' : current.type}
             show={current.show}
-            color={current.color}
+            color={current.color === 'black' ? 'violet' : 'currentColor'}
             brackets={current.brackets}
             padding={4}
           >
@@ -258,7 +258,7 @@ export const ListRenderer: React.FC<ListRendererProps> = ({ block }) => {
     const segments = processTextSegments(text, annotations);
 
     return (
-      <div className='text-xl font-bold mb-4 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent'>
+      <div className='mb-4'>
         {segments.map((segment, index) =>
           renderAnnotatedSegment(segment, index)
         )}
