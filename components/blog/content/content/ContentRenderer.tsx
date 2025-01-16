@@ -14,18 +14,13 @@ import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 // Import our block renderers
-import {
-  ParagraphRenderer,
-  ImageRenderer,
-  ListRenderer,
-  CalloutRenderer,
-} from '../blocks';
+import { ImageRenderer, CalloutRenderer } from '../blocks';
 import { RoughNotationGroup } from 'react-rough-notation';
 import { ErrorBoundary } from '../ErrorBoundry';
 import CodeRenderer from '../blocks/codeRender';
-import { useHeadings } from '@/_context/HeadingContext';
 import { generateHeadingId } from '@/utils/heading';
-
+import { ListRenderer } from '../blocks/ListRendererStyled';
+import { ParagraphRenderer } from '../blocks/ParagraphRendererStyled';
 interface ContentBlockRendererProps {
   block: ContentBlock;
 }
@@ -33,8 +28,6 @@ interface ContentBlockRendererProps {
 export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
   block,
 }) => {
-  const { headings } = useHeadings();
-
   const addHeadingId = (block: ContentBlock) => {
     if (
       isParagraphBlock(block) &&
@@ -53,7 +46,6 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
     return block;
   };
 
-  console.log('ContentBlockRenderer ', block);
   // Memoize the rendered block to prevent unnecessary re-renders
   const renderedBlock = React.useMemo(() => {
     try {
