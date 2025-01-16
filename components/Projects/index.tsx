@@ -232,7 +232,7 @@ export default function ProjectsPage() {
       ))}
 
       {/* Floating Action Button (keeping existing) */}
-      <motion.button
+      {/* <motion.button
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         whileHover={{ scale: 1.1 }}
@@ -253,7 +253,7 @@ export default function ProjectsPage() {
             d='M5 10l7-7m0 0l7 7m-7-7v18'
           />
         </svg>
-      </motion.button>
+      </motion.button> */}
     </motion.div>
   );
 }

@@ -1,5 +1,7 @@
 'use client';
 
+import ScrollToTopButton from '@/hooks/ScrollToTopButton';
+
 interface LayoutWrapperProps {
   children: React.ReactNode;
 }
@@ -17,7 +19,10 @@ export function LayoutWrapper({ children }: LayoutWrapperProps) {
         ))}
       </div>
 
-      <div className='container mx-auto px-4 md:px-8'>{children}</div>
+      <div className='container mx-auto px-4 md:px-8'>
+        {children}
+        <ScrollToTopButton />
+      </div>
     </div>
   );
 }
