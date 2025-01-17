@@ -212,7 +212,7 @@ export default function Navbar() {
                     key={link.title}
                     href={link.path}
                     onClick={() => setOpen(false)}
-                    className='text-lg font-medium text-purple-300 hover:text-purple-100'
+                    className='text-lg font-medium text-purple-300 hover:text-purple-100 capitalize'
                   >
                     {link.title}
                   </Link>
