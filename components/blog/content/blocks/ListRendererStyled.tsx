@@ -44,72 +44,81 @@ const AnnotationWrapper = styled.span<{
   brackets?: string[];
 }>`
   position: relative;
-  display: inline-block;
+  display: inline;
+  z-index: 1;
   white-space: pre-wrap;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 
-  ${props => {
+  ${(props) => {
     switch (props.type) {
       case 'highlight':
         return css`
-          background-color: ${props.color === 'black' 
-            ? '#ee82ee61' 
-            : `${props.color}33`};
-          border-radius: 0.2em;
+          background-image: linear-gradient(
+            ${props.color === 'black' ? '#ee82ee61' : `${props.color}33`},
+            ${props.color === 'black' ? '#ee82ee61' : `${props.color}33`}
+          );
+          background-repeat: no-repeat;
+          background-position: 0 0;
+          background-size: 100% 100%;
           padding: 0.1em 0.2em;
-          animation: ${fadeIn} 0.3s ease forwards;
+          margin: 0 -0.2em;
+          border-radius: 0.2em;
+          animation: ${fadeIn} 0.3s ease-out;
+          line-break: normal;
         `;
 
       case 'underline':
         return css`
-          &::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: -2px;
-            height: 2px;
-            background-color: ${props.color === 'black' ? 'violet' : props.color};
-            animation: ${drawUnderline} 0.3s ease forwards;
-          }
-        `;
-
-      case 'circle':
-        return css`
-          &::before {
-            content: '';
-            position: absolute;
-            left: -4px;
-            right: -4px;
-            top: -4px;
-            bottom: -4px;
-            border: 2px solid ${props.color === 'black' ? 'violet' : props.color};
-            border-radius: 1em;
-            animation: ${drawCircle} 0.3s ease forwards;
-            z-index: -1;
-          }
+          background-image: linear-gradient(
+            to right,
+            ${props.color === 'black' ? 'violet' : props.color},
+            ${props.color === 'black' ? 'violet' : props.color}
+          );
+          background-position: 0 100%;
+          background-repeat: no-repeat;
+          background-size: 100% 2px;
+          animation: ${fadeIn} 0.3s ease-out;
+          padding-bottom: 2px;
         `;
 
       case 'bracket':
         return css`
-          padding: 0 4px;
-          ${props.brackets?.includes('left') && css`
+          margin: 0 0.2em;
+          display: inline;
+
+          ${props.brackets?.includes('left') &&
+          css`
             &::before {
               content: '[';
               position: absolute;
-              left: -4px;
+              transform: translateX(-100%);
+              left: 0;
               color: ${props.color === 'black' ? 'violet' : props.color};
-              animation: ${fadeIn} 0.3s ease forwards;
+              animation: ${fadeIn} 0.3s ease-out;
             }
           `}
-          ${props.brackets?.includes('right') && css`
+
+          ${props.brackets?.includes('right') &&
+          css`
             &::after {
               content: ']';
               position: absolute;
-              right: -4px;
+              transform: translateX(100%);
+              right: 0;
               color: ${props.color === 'black' ? 'violet' : props.color};
-              animation: ${fadeIn} 0.3s ease forwards;
+              animation: ${fadeIn} 0.3s ease-out;
             }
           `}
+        `;
+
+      case 'circle':
+        return css`
+          border: 2px solid ${props.color === 'black' ? 'violet' : props.color};
+          border-radius: 0.3em;
+          padding: 0.1em 0.3em;
+          margin: 0 0.1em;
+          animation: ${fadeIn} 0.3s ease-out;
         `;
 
       default:
@@ -117,7 +126,6 @@ const AnnotationWrapper = styled.span<{
     }
   }}
 `;
-
 
 const createMethodPattern = (methodName: string): RegExp => {
   const escapedPattern = methodName
