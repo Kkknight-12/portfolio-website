@@ -21,35 +21,6 @@ interface BlogDetailProps {
   };
 }
 
-// Type for the page props
-type Props = {
-  params: { id: string }
-}
-
-
-// Generate metadata using the same data fetch
-export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
-  // Get the blog post data
-  const blog = await blogService.getBlog(params.id)
-
-  // Get the parent metadata (from layout)
-  const previousImages = (await parent).openGraph?.images || []
-
-  return {
-    title: blog.data.title,
-    description: `Blog post by ${blog.data.author}`,
-    openGraph: {
-      title: blog.data.title,
-      type: 'article',
-      authors: [blog.data.author],
-      images: [...previousImages], // Keep any layout-defined images
-    }
-  }
-}
-
 
 export default function BlogDetail({ params }: BlogDetailProps) {
   const { data: analyticsData, error: analyticsError } = useAnalytics(
