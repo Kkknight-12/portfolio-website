@@ -1,27 +1,55 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { format } from 'date-fns';
-import { ArrowLeft, Clock, User, Calendar, Eye, Heart } from 'lucide-react';
-import Link from 'next/link';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
-import { useEffect, useState } from 'react';
-import { BlogPost, ContentBlock } from '@/types';
-import { ContentBlockRenderer } from '@/components/blog/content/content/ContentRenderer';
+import { HeadingProvider } from '@/_context/HeadingContext';
 import { BlogDetailHeader } from '@/components/blog/BlogDetailHeader';
+import TableOfContents from '@/components/blog/content/TableOfContents';
+import { ContentBlockRenderer } from '@/components/blog/content/content/ContentRenderer';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { analyticsService, blogService } from '@/services';
-import TableOfContents from '@/components/blog/content/TableOfContents';
-import { HeadingProvider } from '@/_context/HeadingContext';
+import { BlogPost, ContentBlock } from '@/types';
+import { ArrowLeft } from 'lucide-react';
+import { Metadata, ResolvingMetadata } from 'next';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 interface BlogDetailProps {
   params: {
     id: string;
   };
 }
+
+// Type for the page props
+type Props = {
+  params: { id: string }
+}
+
+
+// Generate metadata using the same data fetch
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // Get the blog post data
+  const blog = await blogService.getBlog(params.id)
+
+  // Get the parent metadata (from layout)
+  const previousImages = (await parent).openGraph?.images || []
+
+  return {
+    title: blog.data.title,
+    description: `Blog post by ${blog.data.author}`,
+    openGraph: {
+      title: blog.data.title,
+      type: 'article',
+      authors: [blog.data.author],
+      images: [...previousImages], // Keep any layout-defined images
+    }
+  }
+}
+
 
 export default function BlogDetail({ params }: BlogDetailProps) {
   const { data: analyticsData, error: analyticsError } = useAnalytics(
