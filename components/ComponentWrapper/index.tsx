@@ -1,5 +1,6 @@
 import { Box } from '@mui/system';
 import { ComponentType, ReactNode } from 'react';
+import CanvasComponent from '../canvas/ParticleComponent';
 
 type ComponentProps = {
   children?: ReactNode;
@@ -14,7 +15,6 @@ const Page = (Component: ComponentType<ComponentProps>) => {
     return (
       <>
         <Box className='pt-10 px-2'>
-          {/* <CanvasComponent /> */}
           <Component {...props} />
         </Box>
       </>
