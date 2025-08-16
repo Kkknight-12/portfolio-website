@@ -66,7 +66,9 @@ export const BlogPostFilters = ({
   // Debounce search input
   useEffect(() => {
     const timer = setTimeout(() => {
-      // onFilterChange({ ...filters, search: searchDebounce });
+      if (searchDebounce !== filters.search) {
+        onFilterChange({ ...filters, search: searchDebounce });
+      }
     }, 300);
 
     return () => clearTimeout(timer);

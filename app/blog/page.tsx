@@ -7,6 +7,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { blogService } from '@/services';
 import { BlogPost, BlogFilters, PaginationInfo } from '@/types';
 import { BlogCard } from '@/components/blog/BlogCard';
+import { BlogCardSkeleton } from '@/components/blog/BlogCardSkeleton';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -21,39 +22,41 @@ import { blogsData } from '@/mock';
 
 const PAGE_SIZE_OPTIONS = [10, 20, 50];
 
-// Transform mock data to match BlogPost type
-const transformedMockBlogs: BlogPost[] = blogsData.data.map((blog: any) => {
-  const categories = blog.categories.map((cat: any, index: number) => ({
-    ...cat,
-    id: cat._id,
-    isActive: true,
-    order: index + 1,
-  }));
-  
-  return {
-    ...blog,
-    id: blog._id,
-    date: blog.createdAt,
-    content: [], // Will be added when viewing detail
-    categories,
-    primaryCategory: categories[0] || {
-      _id: 'default',
-      id: 'default',
-      name: 'General',
-      slug: 'general',
+// Transform mock data to match BlogPost type - memoized for performance
+const transformMockBlogs = () => {
+  return blogsData.data.map((blog: any) => {
+    const categories = blog.categories.map((cat: any, index: number) => ({
+      ...cat,
+      id: cat._id,
       isActive: true,
-      order: 1,
-    },
-    status: blog.status || 'published',
-    tags: blog.tags || [],
-  };
-});
+      order: index + 1,
+    }));
+    
+    return {
+      ...blog,
+      id: blog._id,
+      date: blog.createdAt,
+      content: [], // Will be added when viewing detail
+      categories,
+      primaryCategory: categories[0] || {
+        _id: 'default',
+        id: 'default',
+        name: 'General',
+        slug: 'general',
+        isActive: true,
+        order: 1,
+      },
+      status: blog.status || 'published',
+      tags: blog.tags || [],
+    };
+  });
+};
 
 export default function BlogPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [blogs, setBlogs] = useState<BlogPost[]>(transformedMockBlogs);
+  const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [pagination, setPagination] = useState<PaginationInfo>({
     total: 0,
     page: 1,
@@ -61,6 +64,7 @@ export default function BlogPage() {
     hasMore: false,
   });
   const [loading, setLoading] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const [filters, setFilters] = useState<BlogFilters>({
     search: searchParams.get('search') || '',
@@ -70,21 +74,35 @@ export default function BlogPage() {
     limit: Number(searchParams.get('limit')) || 10,
   });
 
+  // Initialize data on mount
+  useEffect(() => {
+    if (!isInitialized) {
+      if (!process.env.NEXT_PUBLIC_API_URL) {
+        // Use mock data for local development
+        const mockData = transformMockBlogs();
+        setBlogs(mockData);
+        setPagination({
+          total: mockData.length,
+          page: 1,
+          totalPages: Math.ceil(mockData.length / filters.limit),
+          hasMore: false,
+        });
+        setLoading(false);
+        setIsInitialized(true);
+      } else {
+        // Fetch from API for production
+        fetchBlogs();
+        setIsInitialized(true);
+      }
+    }
+  }, []);
+
   const fetchBlogs = async () => {
     try {
       setLoading(true);
       
-      // Check if we should use mock data or API
-      if (!process.env.NEXT_PUBLIC_API_URL) {
-        // Just use the mock data that's already in state
-        setPagination({
-          total: transformedMockBlogs.length,
-          page: filters.page,
-          totalPages: Math.ceil(transformedMockBlogs.length / filters.limit),
-          hasMore: filters.page < Math.ceil(transformedMockBlogs.length / filters.limit),
-        });
-      } else {
-        // Use real API
+      // Only use API if available
+      if (process.env.NEXT_PUBLIC_API_URL) {
         const { response, queryParams } = await blogService.getBlogs(filters);
         setBlogs(response.data);
         setPagination(response.pagination);
@@ -92,25 +110,27 @@ export default function BlogPage() {
       }
     } catch (error) {
       console.error('Failed to fetch blogs:', error);
-      // Keep showing mock data on error
+      // On error, use mock data as fallback
+      if (!isInitialized) {
+        const mockData = transformMockBlogs();
+        setBlogs(mockData);
+        setPagination({
+          total: mockData.length,
+          page: 1,
+          totalPages: Math.ceil(mockData.length / filters.limit),
+          hasMore: false,
+        });
+        setIsInitialized(true);
+      }
     } finally {
       setLoading(false);
     }
   };
 
+  // Only fetch from API when filters change (if API is available)
   useEffect(() => {
-    // Only fetch if we have an API URL
-    if (process.env.NEXT_PUBLIC_API_URL) {
+    if (process.env.NEXT_PUBLIC_API_URL && isInitialized) {
       fetchBlogs();
-    } else {
-      // Just set loading to false for mock data
-      setLoading(false);
-      setPagination({
-        total: transformedMockBlogs.length,
-        page: 1,
-        totalPages: 1,
-        hasMore: false,
-      });
     }
   }, [filters]);
 
@@ -150,8 +170,10 @@ export default function BlogPage() {
       />
 
       {loading ? (
-        <div className='flex justify-center'>
-          <Loader2 className='h-8 w-8 animate-spin' />
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+          {[...Array(6)].map((_, i) => (
+            <BlogCardSkeleton key={i} />
+          ))}
         </div>
       ) : (
         <>
