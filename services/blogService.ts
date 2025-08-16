@@ -1,5 +1,6 @@
 // services/blogService.ts
 import { api } from '@/lib/api';
+import { blogCache } from '@/lib/cache';
 import {
   ApiResponse,
   BlogPost,
@@ -13,7 +14,16 @@ export const blogService = {
    * @param id - The blog post ID
    */
   getBlog: async (id: string): Promise<ApiResponse<BlogPost>> => {
+    // Check cache first
+    const cacheKey = `blog-${id}`;
+    const cached = blogCache.get<ApiResponse<BlogPost>>(cacheKey);
+    if (cached) return cached;
+
     const response = await api.get(`/blogs/${id}`);
+    
+    // Cache the response for 5 minutes
+    blogCache.set(cacheKey, response.data, 5 * 60 * 1000);
+    
     return response.data;
   },
 
@@ -33,7 +43,17 @@ export const blogService = {
       if (filters.limit) params.append('limit', filters.limit.toString());
     }
 
+    // Check cache for list requests
+    const cacheKey = `blogs-${params.toString()}`;
+    const cached = blogCache.get<BlogPostListResponse>(cacheKey);
+    if (cached) return cached;
+
     const response = await api.get(`/blogs?${params.toString()}`);
-    return { response: response.data, queryParams: params };
+    const result = { response: response.data, queryParams: params };
+    
+    // Cache for 2 minutes for list views
+    blogCache.set(cacheKey, result, 2 * 60 * 1000);
+    
+    return result;
   },
 };
