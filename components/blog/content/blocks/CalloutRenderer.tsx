@@ -110,7 +110,8 @@ export const CalloutRenderer: React.FC<CalloutRendererProps> = ({ block }) => {
   return (
     <div
       className={cn(
-        'callout relative my-6 rounded-lg border p-4',
+        'callout relative my-6 rounded-lg border',
+        'p-3 sm:p-4', // Responsive padding
         'transition-colors duration-200',
         styleConfig.className
       )}
@@ -118,41 +119,37 @@ export const CalloutRenderer: React.FC<CalloutRendererProps> = ({ block }) => {
       aria-labelledby={heading ? `callout-${block.order}` : undefined}
     >
       {/* Icon and Content Container */}
-      <div className='flex items-start space-x-4'>
+      <div className='flex items-start space-x-2 sm:space-x-4'>
+        {' '}
+        {/* Reduced spacing on mobile */}
         {/* Icon */}
         <div className={cn('flex-shrink-0 mt-1', styleConfig.iconClassName)}>
-          <Icon className='h-5 w-5' />
+          <Icon className='h-4 w-4 sm:h-5 sm:w-5' />{' '}
+          {/* Smaller icon on mobile */}
         </div>
-
         {/* Content */}
-        <div className='flex-1 space-y-2'>
+        <div className='flex-1 min-w-0'>
+          {' '}
+          {/* min-w-0 prevents flex child from overflowing */}
           {/* Heading (if provided) */}
           {heading && (
             <h4
               id={`callout-heading-${block.order}`}
               className={cn(
-                'text-lg font-semibold leading-6',
+                'text-base sm:text-lg font-semibold leading-6',
+                'break-words', // Ensures long words break
                 styleConfig.headingClassName
               )}
             >
               {processText(heading)}
             </h4>
           )}
-
           {/* Main Text Content */}
-          <div className='text-sm leading-relaxed'>{processText(text)}</div>
+          <div className='text-sm leading-relaxed break-words overflow-wrap-anywhere'>
+            {processText(text)}
+          </div>
         </div>
       </div>
-
-      {/* Optional: Custom Icon (if provided) */}
-      {/* {customIcon && (
-        <div
-          className='absolute -right-3 -top-3 h-6 w-6 rounded-full bg-white shadow-sm'
-          aria-hidden='true'
-        >
-          <img src={customIcon} alt='' className='h-full w-full' />
-        </div>
-      )} */}
     </div>
   );
 };
