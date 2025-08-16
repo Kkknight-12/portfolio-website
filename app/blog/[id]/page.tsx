@@ -63,11 +63,9 @@ export default function BlogDetail({ params }: BlogDetailProps) {
         } else {
           // Use real API
           const response = await blogService.getBlog(params.id);
-          // @ts-ignore
           setBlog(response.data);
         }
       } catch (error) {
-        console.error('Failed to fetch blog:', error);
         toast({
           title: 'Error loading blog',
           description: 'Please try again later',
@@ -116,11 +114,7 @@ export default function BlogDetail({ params }: BlogDetailProps) {
         {/* Table of Contents */}
         <div className='hidden lg:block w-[280px] relative'>
           <div className='sticky top-[163px]'>
-            {' '}
-            {/* Adjust top value based on your navbar height */}
             <aside className='overflow-y-auto max-h-[calc(100vh-120px)]'>
-              {' '}
-              {/* Adjust max-height based on spacing needs */}
               <TableOfContents content={blog.content} />
             </aside>
           </div>

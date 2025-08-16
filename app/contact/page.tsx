@@ -120,52 +120,6 @@ function ContactForm() {
     return Object.keys(current).every((k) => current[k]);
   };
 
-  // const handleSubmit = (e: any) => {
-  //   e.preventDefault();
-
-  //   if (!validateForm()) return false;
-
-  //   setLoading(true);
-
-  //   emailjs
-  //     .send(
-  //       process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || '',
-  //       process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || '',
-  //       {
-  //         from_name: form.name,
-  //         from_email: form.email.trim().toLowerCase(),
-  //         to_name: 'mayank',
-  //         to_email: process.env.NEXT_PUBLIC_EMAILJS_RECIEVER,
-  //         message: form.message,
-  //       },
-  //       process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
-  //     )
-  //     .then(
-  //       () => {
-  //         // Success
-  //         setLoading(false);
-  //         alert('Thank You. I will get back to you as soon as possible.');
-
-  //         setForm({
-  //           name: '',
-  //           email: '',
-  //           message: '',
-  //         });
-  //       },
-  //       (error) => {
-  //         setLoading(false);
-  //         console.log(error);
-  //         alert('Sorry. Something went wrong.');
-
-  //         setForm({
-  //           name: '',
-  //           email: '',
-  //           message: '',
-  //         });
-  //       }
-  //     );
-  // };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 

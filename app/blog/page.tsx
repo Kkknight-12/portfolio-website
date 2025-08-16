@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
 import { blogService } from '@/services';
 import { BlogPost, BlogFilters, PaginationInfo } from '@/types';
 import { BlogCard } from '@/components/blog/BlogCard';
@@ -138,14 +136,6 @@ export default function BlogPage() {
     setFilters((prev) => ({ ...prev, page: newPage }));
   };
 
-  // const handleLimitChange = (newLimit: string) => {
-  //   setFilters((prev) => ({
-  //     ...prev,
-  //     limit: parseInt(newLimit),
-  //     page: 1,
-  //   }));
-  // };
-
   return (
     <div className='container mx-auto px-4 py-12'>
       <motion.div
@@ -192,7 +182,6 @@ export default function BlogPage() {
 
               <Select
                 value={filters.limit.toString()}
-                // onValueChange={handleLimitChange}
                 onValueChange={(value) =>
                   setFilters((prev) => ({
                     ...prev,
