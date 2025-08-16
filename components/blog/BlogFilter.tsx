@@ -1,5 +1,5 @@
 // app/blog/list/components/BlogFilters.tsx
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -20,7 +20,7 @@ interface BlogFiltersProps {
   onFilterChange: (filters: any) => void;
 }
 
-export const BlogPostFilters = ({
+const BlogPostFiltersComponent = ({
   filters,
   onFilterChange,
 }: BlogFiltersProps) => {
@@ -142,3 +142,5 @@ export const BlogPostFilters = ({
     </div>
   );
 };
+
+export const BlogPostFilters = React.memo(BlogPostFiltersComponent);

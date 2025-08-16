@@ -1,4 +1,5 @@
 // components/blog/BlogCard.tsx
+import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Eye, Heart } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
@@ -11,7 +12,7 @@ interface BlogCardProps {
   blog: BlogPost;
 }
 
-export function BlogCard({ blog }: BlogCardProps) {
+function BlogCardComponent({ blog }: BlogCardProps) {
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
@@ -96,3 +97,5 @@ export function BlogCard({ blog }: BlogCardProps) {
     </motion.article>
   );
 }
+
+export const BlogCard = React.memo(BlogCardComponent);

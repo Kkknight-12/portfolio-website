@@ -73,9 +73,7 @@ const CALLOUT_STYLES = {
  * @returns {JSX.Element} Rendered callout with styling
  */
 export const CalloutRenderer: React.FC<CalloutRendererProps> = ({ block }) => {
-  console.log('CalloutRenderer ', block);
   const { heading, text, style } = block.data;
-  // const { heading, text, style, icon: customIcon } = block.data;
 
   // Get style configuration based on callout type
   const styleConfig = CALLOUT_STYLES[style] || CALLOUT_STYLES.info;

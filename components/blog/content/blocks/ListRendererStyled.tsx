@@ -173,7 +173,6 @@ const processTextSegments = (
     let match;
 
     while ((match = regex.exec(content)) !== null) {
-      console.log('match ', match);
       changes.push(
         {
           position: match.index,
@@ -188,14 +187,12 @@ const processTextSegments = (
       );
     }
   });
-  console.log('changes before  ', changes);
 
   // 3. Sort changes by position and type (starts before ends)
   changes.sort((a, b) => {
     if (a.position !== b.position) return a.position - b.position;
     return a.isStart ? -1 : 1; // Start changes come before end changes
   });
-  console.log('changes after  ', changes);
 
   // 4. Process segments with active annotations tracking
   const segments: Array<{
@@ -217,7 +214,6 @@ const processTextSegments = (
       annotations: [],
     });
   }
-  console.log('segments before ', segments);
 
   // Process each change
   for (let i = 0; i < changes.length; i++) {
@@ -242,7 +238,6 @@ const processTextSegments = (
       });
     }
   }
-  console.log('segments after ', segments);
   return segments;
 };
 
