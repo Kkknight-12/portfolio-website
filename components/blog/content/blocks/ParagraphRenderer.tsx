@@ -41,7 +41,9 @@ const createMethodPattern = (pattern: string): RegExp => {
     return new RegExp(`(?<=[\\s]|^)${pattern}\\(\\)(?=[\\s]|$|[.,!?])`, 'g');
   } else {
     // For normal text matches, use word boundaries
-    return new RegExp(`\\b${pattern}\\b`, 'g');
+    // return new RegExp(`\\b${pattern}\\b`, 'g');
+    const escapedPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(escapedPattern, 'g');
   }
 };
 
@@ -176,7 +178,7 @@ export const ParagraphRenderer: React.FC<ParagraphRendererProps> = ({
   const props = Tag.startsWith('h')
     ? {
         id,
-        className: 'scroll-mt-20', // Adjust based on your navbar height
+        className: 'scroll-mt-14', // Adjust based on your navbar height
       }
     : {};
 

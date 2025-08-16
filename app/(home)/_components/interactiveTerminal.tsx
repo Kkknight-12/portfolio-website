@@ -80,7 +80,6 @@ export function InteractiveTerminal() {
     },
   };
 
-  console.log('history ', history);
   // Auto-focus input on mount
   useEffect(() => {
     inputRef.current?.focus();

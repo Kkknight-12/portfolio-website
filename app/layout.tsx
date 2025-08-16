@@ -11,6 +11,7 @@ const inter = Inter({ subsets: ['latin'] });
 const arima = Arima({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteMetadata.url || 'https://mayank-portfolio-seven.vercel.app'),
   applicationName: 'Mayank Portfolio',
   title: siteMetadata.title,
   description: siteMetadata.description,

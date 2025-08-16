@@ -46,8 +46,13 @@ const createMethodPattern = (methodName: string): RegExp => {
 
   return new RegExp(pattern, 'g');
 };
+
 /**
- * Enhanced segment processor that respects code blocks and method calls
+ * Processes text to find annotation matches
+ * Returns segments with their applicable annotations
+ *
+ * @param content - Text to process
+ * @param annotations - Array of annotations to apply
  */
 const processTextSegments = (
   content: string,
@@ -146,7 +151,6 @@ const processTextSegments = (
       });
     }
   }
-console.log('segments after ', segments);
   return segments;
 };
 
@@ -165,14 +169,6 @@ console.log('segments after ', segments);
  */
 export const ListRenderer: React.FC<ListRendererProps> = ({ block }) => {
   const { items, text, annotations = [], style = 'unordered' } = block.data;
-
-  /**
-   * Processes text to find annotation matches
-   * Returns segments with their applicable annotations
-   *
-   * @param text - Text to process
-   * @param annotations - Array of annotations to apply
-   */
 
   /**
    * Renders a text segment with its annotations
