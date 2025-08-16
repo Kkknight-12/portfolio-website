@@ -31,18 +31,41 @@ export default function BlogDetail({ params }: BlogDetailProps) {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Track view when component mounts
-    analyticsService.trackBlogView(params.id);
+    // Track view when component mounts - only if API is available
+    const trackView = async () => {
+      try {
+        if (process.env.NEXT_PUBLIC_API_URL) {
+          await analyticsService.trackBlogView(params.id);
+        }
+      } catch (error) {
+        // Silently fail - analytics is not critical
+      }
+    };
+    trackView();
   }, [params.id]);
 
   useEffect(() => {
     const fetchBlog = async () => {
       try {
         setLoading(true);
-        const response = await blogService.getBlog(params.id);
-
-        // @ts-ignore
-        setBlog(response.data);
+        
+        // Check if we should use mock data
+        if (!process.env.NEXT_PUBLIC_API_URL) {
+          // Use mock data for local development
+          const { getMockBlogById } = await import('@/utils/mockData');
+          const mockBlog = getMockBlogById(params.id);
+          
+          if (mockBlog) {
+            setBlog(mockBlog);
+          } else {
+            throw new Error('Blog not found in mock data');
+          }
+        } else {
+          // Use real API
+          const response = await blogService.getBlog(params.id);
+          // @ts-ignore
+          setBlog(response.data);
+        }
       } catch (error) {
         console.error('Failed to fetch blog:', error);
         toast({

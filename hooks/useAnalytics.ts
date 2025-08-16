@@ -51,6 +51,16 @@ export const useAnalytics = (
     try {
       setLoading(true);
 
+      // Check if API is available
+      if (!process.env.NEXT_PUBLIC_API_URL) {
+        // Use mock data for local development
+        const { getMockAnalytics } = await import('@/utils/mockData');
+        const mockData = getMockAnalytics(blogId);
+        setData(mockData);
+        setError(null);
+        return;
+      }
+
       const response = await analyticsService.getBlogAnalytics(blogId, options);
 
       if (!response.success) {
@@ -60,9 +70,16 @@ export const useAnalytics = (
       setData(response.data);
       setError(null);
     } catch (err) {
-      setError(
-        err instanceof Error ? err : new Error('Failed to fetch analytics')
-      );
+      // Silently handle analytics errors in development
+      if (!process.env.NEXT_PUBLIC_API_URL) {
+        console.log('Analytics unavailable in development mode');
+        setData(null);
+        setError(null);
+      } else {
+        setError(
+          err instanceof Error ? err : new Error('Failed to fetch analytics')
+        );
+      }
     } finally {
       setLoading(false);
     }

@@ -17,14 +17,43 @@ import {
 } from '@/components/ui/select';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { BlogPostFilters } from '@/components/blog/BlogFilter';
+import { blogsData } from '@/mock';
 
 const PAGE_SIZE_OPTIONS = [10, 20, 50];
+
+// Transform mock data to match BlogPost type
+const transformedMockBlogs: BlogPost[] = blogsData.data.map((blog: any) => {
+  const categories = blog.categories.map((cat: any, index: number) => ({
+    ...cat,
+    id: cat._id,
+    isActive: true,
+    order: index + 1,
+  }));
+  
+  return {
+    ...blog,
+    id: blog._id,
+    date: blog.createdAt,
+    content: [], // Will be added when viewing detail
+    categories,
+    primaryCategory: categories[0] || {
+      _id: 'default',
+      id: 'default',
+      name: 'General',
+      slug: 'general',
+      isActive: true,
+      order: 1,
+    },
+    status: blog.status || 'published',
+    tags: blog.tags || [],
+  };
+});
 
 export default function BlogPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [blogs, setBlogs] = useState<BlogPost[]>([]);
+  const [blogs, setBlogs] = useState<BlogPost[]>(transformedMockBlogs);
   const [pagination, setPagination] = useState<PaginationInfo>({
     total: 0,
     page: 1,
@@ -44,21 +73,45 @@ export default function BlogPage() {
   const fetchBlogs = async () => {
     try {
       setLoading(true);
-      const { response, queryParams } = await blogService.getBlogs(filters);
-
-      setBlogs(response.data);
-      setPagination(response.pagination);
-
-      router.push(`/blog?${queryParams.toString()}`, { scroll: false });
+      
+      // Check if we should use mock data or API
+      if (!process.env.NEXT_PUBLIC_API_URL) {
+        // Just use the mock data that's already in state
+        setPagination({
+          total: transformedMockBlogs.length,
+          page: filters.page,
+          totalPages: Math.ceil(transformedMockBlogs.length / filters.limit),
+          hasMore: filters.page < Math.ceil(transformedMockBlogs.length / filters.limit),
+        });
+      } else {
+        // Use real API
+        const { response, queryParams } = await blogService.getBlogs(filters);
+        setBlogs(response.data);
+        setPagination(response.pagination);
+        router.push(`/blog?${queryParams.toString()}`, { scroll: false });
+      }
     } catch (error) {
       console.error('Failed to fetch blogs:', error);
+      // Keep showing mock data on error
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchBlogs();
+    // Only fetch if we have an API URL
+    if (process.env.NEXT_PUBLIC_API_URL) {
+      fetchBlogs();
+    } else {
+      // Just set loading to false for mock data
+      setLoading(false);
+      setPagination({
+        total: transformedMockBlogs.length,
+        page: 1,
+        totalPages: 1,
+        hasMore: false,
+      });
+    }
   }, [filters]);
 
   const handlePageChange = (newPage: number) => {
@@ -72,7 +125,6 @@ export default function BlogPage() {
   //     page: 1,
   //   }));
   // };
-  // console.log('filters ', filters);
 
   return (
     <div className='container mx-auto px-4 py-12'>

@@ -31,6 +31,17 @@ export const BlogPostFilters = ({
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        // Only fetch if API is available
+        if (!process.env.NEXT_PUBLIC_API_URL) {
+          // Use mock categories for local development
+          setCategories([
+            { _id: '67387c575e787a952ddf1bae', id: '67387c575e787a952ddf1bae', name: 'Programming', slug: 'programming', isActive: true, order: 1 },
+            { _id: '67387ef35e787a952ddf1bb5', id: '67387ef35e787a952ddf1bb5', name: 'JavaScript', slug: 'javascript', isActive: true, order: 2 },
+            { _id: '67387f445e787a952ddf1bb9', id: '67387f445e787a952ddf1bb9', name: 'TypeScript', slug: 'typescript', isActive: true, order: 3 },
+          ]);
+          return;
+        }
+        
         const response = await categoryService.getCategories();
         const { data, success } = response;
 
@@ -41,6 +52,12 @@ export const BlogPostFilters = ({
         setCategories(data);
       } catch (error) {
         console.error('Failed to fetch categories:', error);
+        // Use mock categories as fallback
+        setCategories([
+          { _id: '67387c575e787a952ddf1bae', id: '67387c575e787a952ddf1bae', name: 'Programming', slug: 'programming', isActive: true, order: 1 },
+          { _id: '67387ef35e787a952ddf1bb5', id: '67387ef35e787a952ddf1bb5', name: 'JavaScript', slug: 'javascript', isActive: true, order: 2 },
+          { _id: '67387f445e787a952ddf1bb9', id: '67387f445e787a952ddf1bb9', name: 'TypeScript', slug: 'typescript', isActive: true, order: 3 },
+        ]);
       }
     };
     fetchCategories();
@@ -49,14 +66,14 @@ export const BlogPostFilters = ({
   // Debounce search input
   useEffect(() => {
     const timer = setTimeout(() => {
-      onFilterChange({ ...filters, search: searchDebounce });
+      // onFilterChange({ ...filters, search: searchDebounce });
     }, 300);
 
     return () => clearTimeout(timer);
   }, [searchDebounce]);
 
   return (
-    <div className='mb-8 space-y-4 bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-xl'>
+    <div className='mb-8 space-y-4 bg-white/5 backdrop-blur-sm  p-6 rounded-xl'>
       {/* Search Bar */}
       <div className='relative'>
         <Search className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-purple-400' />
