@@ -6,6 +6,7 @@ import { siteMetadata } from '@/constants';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { LayoutWrapper } from './layoutWrapper';
+import LoadingBar from '@/components/LoadingBar';
 
 const inter = Inter({ subsets: ['latin'] });
 const arima = Arima({ subsets: ['latin'] });
@@ -70,6 +71,7 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
+          <LoadingBar />
           <Navbar />
           <LayoutWrapper>
             {/* bg blur effect */}

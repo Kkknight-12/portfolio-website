@@ -1,9 +1,10 @@
 // components/blog/BlogCard.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Eye, Heart } from 'lucide-react';
+import { ArrowRight, Eye, Heart, Loader2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { BlogPost } from '@/types';
 import { Button } from '../ui/button';
@@ -13,6 +14,14 @@ interface BlogCardProps {
 }
 
 function BlogCardComponent({ blog }: BlogCardProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    router.push(`/blog/${blog._id}`);
+  };
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
@@ -20,7 +29,7 @@ function BlogCardComponent({ blog }: BlogCardProps) {
       viewport={{ once: true }}
       className='group relative h-full'
     >
-      <Link href={`/blog/${blog._id}`}>
+      <Link href={`/blog/${blog._id}`} onClick={handleClick}>
         {/* <div
           className='group relative h-full bg-black/40 backdrop-blur-sm border 
         border-white/10 hover:border-white/20 p-6 rounded-xl transition-all'
@@ -29,10 +38,16 @@ function BlogCardComponent({ blog }: BlogCardProps) {
           className='group relative h-full bg-black/20 backdrop-blur-sm border 
         border-white/10 hover:border-white/20 p-6 rounded-xl transition-all'
         >
-          {/* <div
-          className='relative h-full overflow-hidden rounded-xl border border-white/20 p-6 
-         bg-gradient-to-br from-gray-900 via-purple-900/40 to-gray-900'
-        > */}
+          {/* Loading Overlay */}
+          {isLoading && (
+            <div className='absolute inset-0 bg-black/60 backdrop-blur-sm rounded-xl z-50 flex items-center justify-center'>
+              <div className='flex flex-col items-center gap-3'>
+                <Loader2 className='w-8 h-8 animate-spin text-purple-400' />
+                <span className='text-sm text-purple-300'>Loading blog...</span>
+              </div>
+            </div>
+          )}
+          
           {/* Gradient Blur Effect */}
           <div className='absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity' />
 
