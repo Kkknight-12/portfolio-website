@@ -49,11 +49,73 @@ export const blogService = {
     if (cached) return cached;
 
     const response = await api.get(`/blogs?${params.toString()}`);
-    const result = { response: response.data, queryParams: params };
-    
+
+    // Transform API response to match expected structure
+    const rawData = Array.isArray(response.data) ? response.data : [];
+
+    const transformedBlogs = rawData.map((blog: any) => {
+      // Transform categories
+      const categories = (blog.categories || []).map((cat: any, index: number) => ({
+        _id: cat._id,
+        id: cat._id,
+        name: cat.name,
+        slug: cat.slug,
+        description: cat.description,
+        isActive: true,
+        order: index + 1,
+      }));
+
+      // Find primary category object
+      const primaryCategoryObj = categories.find(
+        (cat: any) => cat._id === blog.primaryCategory
+      ) || categories[0] || {
+        _id: 'default',
+        id: 'default',
+        name: 'General',
+        slug: 'general',
+        isActive: true,
+        order: 1,
+      };
+
+      // Transform author to string
+      const authorName = blog.author
+        ? `${blog.author.firstName} ${blog.author.lastName}`
+        : 'Anonymous';
+
+      return {
+        _id: blog.id,
+        id: blog.id,
+        title: blog.title,
+        author: authorName,
+        date: blog.createdAt,
+        content: [], // Will be loaded when viewing detail
+        categories,
+        primaryCategory: primaryCategoryObj,
+        status: blog.status || 'published',
+        tags: blog.tags || [],
+        metadata: blog.metadata || { views: 0, likes: 0 },
+        createdAt: blog.createdAt,
+        updatedAt: blog.updatedAt,
+      };
+    });
+
+    const result = {
+      response: {
+        success: true,
+        data: transformedBlogs,
+        pagination: {
+          total: transformedBlogs.length,
+          page: filters.page || 1,
+          totalPages: Math.ceil(transformedBlogs.length / (filters.limit || 10)),
+          hasMore: false,
+        },
+      },
+      queryParams: params,
+    };
+
     // Cache for 2 minutes for list views
     blogCache.set(cacheKey, result, 2 * 60 * 1000);
-    
+
     return result;
   },
 };
