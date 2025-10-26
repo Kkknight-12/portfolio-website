@@ -302,7 +302,7 @@ export const ListRenderer: React.FC<ListRendererProps> = ({ block }) => {
    * Renders a list item with its annotations
    */
   const renderListItem = useCallback(
-    (item: string, index: number): JSX.Element => {
+    (item: any, index: number): JSX.Element => {
       const segments = processTextSegments(item, annotations);
 
       return (

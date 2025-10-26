@@ -3,10 +3,12 @@ import { BlogPost, ContentBlock, HtmlTagType, BlogStatus } from '@/types';
 
 // Check if we're in development mode
 export const isDevelopment = process.env.NODE_ENV === 'development';
-export const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true' || !process.env.NEXT_PUBLIC_API_URL;
+export const useMockData =
+  process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true' ||
+  !process.env.NEXT_PUBLIC_API_URL;
 
 // Mock blog content blocks
-const mockContentBlocks: ContentBlock[] = [
+const mockContentBlocks: any[] = [
   {
     type: 'paragraph',
     data: {
@@ -181,9 +183,11 @@ import { blogsData } from '@/mock';
 // Get mock blog by ID
 export const getMockBlogById = (id: string): BlogPost | null => {
   // First check our detailed mock posts
-  const detailedPost = mockBlogPosts.find(blog => blog._id === id || blog.id === id);
+  const detailedPost = mockBlogPosts.find(
+    (blog) => blog._id === id || blog.id === id
+  );
   if (detailedPost) return detailedPost;
-  
+
   // Then check the imported mock data and add content blocks
   const basicPost = blogsData.data.find((blog: any) => blog._id === id);
   if (basicPost) {
@@ -194,7 +198,7 @@ export const getMockBlogById = (id: string): BlogPost | null => {
       isActive: true,
       order: index + 1,
     }));
-    
+
     return {
       ...basicPost,
       id: basicPost._id,
@@ -213,7 +217,7 @@ export const getMockBlogById = (id: string): BlogPost | null => {
       tags: ['mock', 'development'],
     } as BlogPost;
   }
-  
+
   return null;
 };
 
