@@ -7,8 +7,7 @@ import { ContentBlockRenderer } from '@/components/blog/content/content/ContentR
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { useAnalytics } from '@/hooks/useAnalytics';
-import { analyticsService, blogService } from '@/services';
+import { blogService } from '@/services';
 import { BlogPost, ContentBlock } from '@/types';
 import { ArrowLeft } from 'lucide-react';
 import { Metadata, ResolvingMetadata } from 'next';
@@ -23,26 +22,9 @@ interface BlogDetailProps {
 
 
 export default function BlogDetail({ params }: BlogDetailProps) {
-  const { data: analyticsData, error: analyticsError } = useAnalytics(
-    params.id
-  );
   const [blog, setBlog] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
-
-  useEffect(() => {
-    // Track view when component mounts - only if API is available
-    const trackView = async () => {
-      try {
-        if (process.env.NEXT_PUBLIC_API_URL) {
-          await analyticsService.trackBlogView(params.id);
-        }
-      } catch (error) {
-        // Silently fail - analytics is not critical
-      }
-    };
-    trackView();
-  }, [params.id]);
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -103,7 +85,7 @@ export default function BlogDetail({ params }: BlogDetailProps) {
           <BlogDetailHeader
             title={blog.title}
             author={blog.author}
-            views={analyticsData?.totalViews || 0}
+            views={blog.metadata.views}
             categories={blog.categories}
           />
           <Card className='w-full dark:bg-slate-800/60 p-8 border-0'>
