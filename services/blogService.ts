@@ -50,10 +50,16 @@ export const blogService = {
 
     const response = await api.get(`/blogs?${params.toString()}`);
 
-    // Transform API response to match expected structure
-    const rawData = Array.isArray(response.data) ? response.data : [];
+    // Extract data from API response structure: {success, data, pagination}
+    const apiData = response.data.data || [];
+    const apiPagination = response.data.pagination || {
+      total: 0,
+      page: 1,
+      totalPages: 1,
+      hasMore: false,
+    };
 
-    const transformedBlogs = rawData.map((blog: any) => {
+    const transformedBlogs = apiData.map((blog: any) => {
       // Transform categories
       const categories = (blog.categories || []).map((cat: any, index: number) => ({
         _id: cat._id,
@@ -103,12 +109,7 @@ export const blogService = {
       response: {
         success: true,
         data: transformedBlogs,
-        pagination: {
-          total: transformedBlogs.length,
-          page: filters.page || 1,
-          totalPages: Math.ceil(transformedBlogs.length / (filters.limit || 10)),
-          hasMore: false,
-        },
+        pagination: apiPagination,
       },
       queryParams: params,
     };
