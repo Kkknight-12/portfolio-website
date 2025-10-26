@@ -1,7 +1,10 @@
-import React from 'react';
-import { RoughNotation, RoughNotationGroup } from 'react-rough-notation';
+'use client';
+
+import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { ParagraphBlock, Annotation, HtmlTagType } from '@/types';
+import { ParagraphBlock } from '@/types';
+import { HtmlTagType } from '@/types/blog';
+import { RoughNotation } from 'react-rough-notation';
 
 interface ParagraphRendererProps {
   block: ParagraphBlock;
@@ -18,204 +21,178 @@ const tagStyles: Record<HtmlTagType, string> = {
   span: 'inline-block',
 };
 
-/**
- * Creates a regex pattern for method names with word boundaries
- * Handles both simple method calls and full syntax
- * @example some() -> /\bsome\(\)\b/
- * @example array.some(x => x > 5) -> matches the full pattern
- */
-// const createMethodPattern = (methodName: string): RegExp => {
-//   // Match the exact method name with () and ensure it's a standalone word
-//   // Look behind for word boundary or whitespace
-//   // Look ahead for word boundary or whitespace
-//   return new RegExp(`(?<=[\\s]|^)${methodName}\\(\\)(?=[\\s]|$|[.,!?])`, 'g');
-// };
-const createMethodPattern = (pattern: string): RegExp => {
-  // Check if the pattern includes parentheses
-  const hasParentheses = pattern.includes('()');
-
-  if (hasParentheses) {
-    //   // For method calls like some(), find(), etc.
-    //   const methodName = pattern.replace('()', '');
-    //   return new RegExp(`\\b${methodName}\\(\\)\\b`, 'g');
-    return new RegExp(`(?<=[\\s]|^)${pattern}\\(\\)(?=[\\s]|$|[.,!?])`, 'g');
-  } else {
-    // For normal text matches, use word boundaries
-    // return new RegExp(`\\b${pattern}\\b`, 'g');
-    const escapedPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return new RegExp(escapedPattern, 'g');
-  }
-};
-
-/**
- * Enhanced segment processor that respects code blocks and method calls
- */
-const processAnnotations = (
-  content: string,
-  annotations: Annotation[]
-): Array<{
+interface TextSegment {
   text: string;
-  start: number;
-  end: number;
-  annotations: Annotation[];
-}> => {
-  if (!annotations.length) {
-    return [{ text: content, start: 0, end: content.length, annotations: [] }];
-  }
+  annotationId?: string;
+  type?: string;
+  color?: string;
+  show?: boolean;
+  brackets?: string[];
+}
 
-  // Find all boundaries including code blocks
-  const boundaries = new Set<number>();
-  boundaries.add(0);
-  boundaries.add(content.length);
-
-  annotations.forEach((annotation) => {
-    // Create appropriate regex based on annotation type
-    const regex = createMethodPattern(annotation.regex);
-    let match;
-
-    while ((match = regex.exec(content)) !== null) {
-      boundaries.add(match.index);
-      boundaries.add(match.index + match[0].length);
-    }
-  });
-
-  const sortedBoundaries = Array.from(boundaries).sort((a, b) => a - b);
-  const segments: Array<{
-    text: string;
-    start: number;
-    end: number;
-    annotations: Annotation[];
-  }> = [];
-
-  // Process segments with their annotations
-  for (let i = 0; i < sortedBoundaries.length - 1; i++) {
-    const start = sortedBoundaries[i];
-    const end = sortedBoundaries[i + 1];
-    const segmentText = content.slice(start, end);
-
-    const appliedAnnotations = annotations.filter((annotation) => {
-      const regex = createMethodPattern(annotation.regex);
-      return regex.test(segmentText);
-    });
-
-    segments.push({
-      text: segmentText,
-      start,
-      end,
-      annotations: appliedAnnotations,
-    });
-  }
-
-  return segments;
-};
-
+/**
+ * Client-only renderer that uses position-based or regex matching
+ */
 export const ParagraphRenderer: React.FC<ParagraphRendererProps> = ({
-  block,
+  block
 }) => {
-  const {
-    text,
-    htmlTag: Tag,
-    annotations = [],
-    brackets = [],
-    id,
-  } = block.data;
+  const { text, htmlTag: Tag, annotations = [], id } = block.data;
   const baseStyles = tagStyles[Tag];
+  const containerRef = useRef<HTMLElement>(null);
+  const [segments, setSegments] = useState<TextSegment[]>([]);
+  const [isProcessed, setIsProcessed] = useState(false);
 
-  // Render annotated segment recursively
-  const renderAnnotatedSegment = (
-    segment: {
-      text: string;
-      annotations: Annotation[];
-    },
-    index: number
-  ): JSX.Element => {
-    if (!segment.annotations.length) {
-      return <React.Fragment key={index}>{segment.text}</React.Fragment>;
+  useEffect(() => {
+    if (isProcessed || annotations.length === 0) {
+      return;
     }
 
-    const renderWithAnnotations = (
-      text: string,
-      remainingAnnotations: Annotation[],
-      currentIndex: number
-    ): JSX.Element => {
-      if (!remainingAnnotations.length) {
-        return <React.Fragment key={currentIndex}>{text}</React.Fragment>;
+    // Create segments based on annotations
+    const newSegments: TextSegment[] = [];
+    let lastIndex = 0;
+
+    // Process annotations - use position data if available, fallback to regex
+    const processedAnnotations = annotations
+      .map(ann => {
+        // First, try to use position-based data if available
+        if (ann.startOffset !== undefined && ann.endOffset !== undefined) {
+          // Use exact position data from backend
+          return {
+            annotation: ann,
+            start: ann.startOffset,
+            end: ann.endOffset,
+            text: ann.text || text.slice(ann.startOffset, ann.endOffset)
+          };
+        }
+
+        // Fallback to regex-based matching for old content
+        try {
+          const regex = new RegExp(ann.regex, 'g');
+          let match;
+          let occurrenceCount = 0;
+
+          while ((match = regex.exec(text)) !== null) {
+            occurrenceCount++;
+            // If occurrenceNumber is specified, use it; otherwise default to first occurrence
+            const targetOccurrence = ann.occurrenceNumber || 1;
+            if (occurrenceCount === targetOccurrence) {
+              return {
+                annotation: ann,
+                start: match.index,
+                end: match.index + match[0].length,
+                text: match[0]
+              };
+            }
+          }
+        } catch (error) {
+          console.warn('Failed to process annotation with regex:', error);
+        }
+
+        return null;
+      })
+      .filter(Boolean)
+      .sort((a, b) => a!.start - b!.start);
+
+    // Build segments
+    processedAnnotations.forEach(item => {
+      if (!item) return;
+
+      // Add text before annotation
+      if (lastIndex < item.start) {
+        newSegments.push({
+          text: text.slice(lastIndex, item.start)
+        });
       }
 
-      const [currentAnnotation, ...rest] = remainingAnnotations;
+      // Add annotated text
+      // Fix black highlight issue - only for highlight type
+      let annotationColor: string = item.annotation.color;
+      if (item.annotation.type === 'highlight' && item.annotation.color === 'black') {
+        annotationColor = 'rgba(181,216,238,0.53)'; // Light blue for black highlights
+      }
 
-      return (
-        <RoughNotation
-          key={currentIndex}
-          type={
-            currentAnnotation.type === 'brackets'
-              ? 'bracket'
-              : currentAnnotation.type
-          }
-          show={currentAnnotation.show}
-          color={
-            currentAnnotation.type === 'highlight' &&
-            currentAnnotation.color === 'black'
-              ? '#ee82ee61'
-              : currentAnnotation.color === 'black'
-              ? 'violet'
-              : 'currentColor'
-          }
-          brackets={currentAnnotation.brackets}
-          padding={1}
-        >
-          {renderWithAnnotations(text, rest, currentIndex + 1)}
-        </RoughNotation>
-      );
-    };
+      newSegments.push({
+        text: item.text,
+        annotationId: `ann-${item.start}`,
+        type: item.annotation.type,
+        color: annotationColor as any,
+        show: item.annotation.show !== false,
+        brackets: item.annotation.brackets
+      });
 
-    return renderWithAnnotations(segment.text, segment.annotations, index);
-  };
+      lastIndex = item.end;
+    });
 
-  // Process and render segments
-  const segments = processAnnotations(text, annotations);
+    // Add remaining text
+    if (lastIndex < text.length) {
+      newSegments.push({
+        text: text.slice(lastIndex)
+      });
+    }
+
+    setSegments(newSegments);
+    setIsProcessed(true);
+  }, [text, annotations, isProcessed]);
+
+  // If no annotations or not processed yet, just show plain text
+  if (annotations.length === 0 || segments.length === 0) {
+    const props = Tag.startsWith('h')
+      ? { id, className: 'scroll-mt-14' }
+      : {};
+
+    return (
+      <Tag {...props} ref={containerRef as any} className={cn(baseStyles, 'relative paragraph-block')}>
+        {text}
+      </Tag>
+    );
+  }
 
   const props = Tag.startsWith('h')
-    ? {
-        id,
-        className: 'scroll-mt-14', // Adjust based on your navbar height
-      }
+    ? { id, className: 'scroll-mt-14' }
     : {};
 
   return (
-    <RoughNotationGroup show={true}>
-      <Tag {...props} className={cn(baseStyles, 'relative paragraph-block')}>
-        {brackets.length > 0 ? (
-          <RoughNotation
-            type='bracket'
-            brackets={brackets}
-            show={true}
-            color='violet'
-            strokeWidth={2}
-          >
-            {segments.map((segment, index) =>
-              renderAnnotatedSegment(
-                {
-                  text: segment.text,
-                  annotations: segment.annotations,
-                },
-                index
-              )
-            )}
-          </RoughNotation>
-        ) : (
-          segments.map((segment, index) =>
-            renderAnnotatedSegment(
-              {
-                text: segment.text,
-                annotations: segment.annotations,
-              },
-              index
-            )
-          )
-        )}
-      </Tag>
-    </RoughNotationGroup>
+    <Tag {...props} ref={containerRef as any} className={cn(baseStyles, 'relative paragraph-block')}>
+      {segments.map((segment, index) => {
+        if (segment.annotationId) {
+          // Handle bold and code as plain HTML (not RoughNotation)
+          if (segment.type === 'bold') {
+            return (
+              <strong key={index} className="font-bold">
+                {segment.text}
+              </strong>
+            );
+          }
+
+          if (segment.type === 'code') {
+            return (
+              <code key={index} className="px-1.5 py-0.5 bg-gray-800/50 text-purple-300 rounded text-sm font-mono">
+                {segment.text}
+              </code>
+            );
+          }
+
+          // Other annotations use RoughNotation
+          // Fix bracket type for RoughNotation
+          const annotationType = segment.type === 'brackets' ? 'bracket' : segment.type;
+
+          return (
+            <RoughNotation
+              key={index}
+              type={annotationType as any}
+              show={segment.show}
+              color={segment.color}
+              brackets={segment.brackets as any}
+              padding={4}
+              multiline={true}
+            >
+              {segment.text}
+            </RoughNotation>
+          );
+        }
+        return <React.Fragment key={index}>{segment.text}</React.Fragment>;
+      })}
+    </Tag>
   );
 };
 

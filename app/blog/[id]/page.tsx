@@ -1,18 +1,17 @@
-'use client';
-
-import { HeadingProvider } from '@/_context/HeadingContext';
-import { BlogDetailHeader } from '@/components/blog/BlogDetailHeader';
-import TableOfContents from '@/components/blog/content/TableOfContents';
-import { ContentBlockRenderer } from '@/components/blog/content/content/ContentRenderer';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
+import { Metadata } from 'next';
 import { blogService } from '@/services';
-import { BlogPost, ContentBlock } from '@/types';
-import { ArrowLeft } from 'lucide-react';
-import { Metadata, ResolvingMetadata } from 'next';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { BlogPost } from '@/types';
+import BlogDetailClient from './BlogDetailClient';
+import {
+  calculateWordCount,
+  calculateReadingTime,
+  extractDescription,
+  extractFirstImage,
+  generateBlogPostingSchema,
+  generateBreadcrumbSchema,
+  combineSchemas,
+  safeJsonLdScript,
+} from '@/utils/seo/json-ld';
 
 interface BlogDetailProps {
   params: {
@@ -20,117 +19,193 @@ interface BlogDetailProps {
   };
 }
 
+/**
+ * Generate metadata for SEO
+ */
+export async function generateMetadata({
+  params,
+}: BlogDetailProps): Promise<Metadata> {
+  try {
+    // Fetch blog data
+    const response = await blogService.getBlog(params.id);
+    const blog = response.data as BlogPost;
 
-export default function BlogDetail({ params }: BlogDetailProps) {
-  const [blog, setBlog] = useState<BlogPost | null>(null);
-  const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
+    // Calculate SEO metrics
+    const wordCount = calculateWordCount(blog.content || []);
+    const readingTime = calculateReadingTime(wordCount);
+    const description =
+      extractDescription(blog.content || []) || 'Read this blog post';
+    const firstImage =
+      extractFirstImage(blog.content || []) ||
+      'https://mayank-portfolio-seven.vercel.app/og-image.png';
 
-  useEffect(() => {
-    const fetchBlog = async () => {
-      try {
-        setLoading(true);
-        
-        // Check if we should use mock data
-        if (!process.env.NEXT_PUBLIC_API_URL) {
-          // Use mock data for local development
-          const { getMockBlogById } = await import('@/utils/mockData');
-          const mockBlog = getMockBlogById(params.id);
-          
-          if (mockBlog) {
-            setBlog(mockBlog);
-          } else {
-            throw new Error('Blog not found in mock data');
-          }
-        } else {
-          // Use real API
-          const response = await blogService.getBlog(params.id);
-          setBlog(response.data);
-        }
-      } catch (error) {
-        toast({
-          title: 'Error loading blog',
-          description: 'Please try again later',
-          variant: 'destructive',
-        });
-      } finally {
-        setLoading(false);
-      }
+    // Get author name and primary category
+    const authorName = blog.author || 'Anonymous';
+    const primaryCategoryName =
+      blog.primaryCategory?.name || blog.categories?.[0]?.name || 'Blog';
+
+    // Generate keywords
+    const allKeywords = [
+      ...(blog.tags || []),
+      primaryCategoryName,
+      ...(blog.categories?.map((c) => c.name) || []),
+    ];
+
+    const blogUrl = `https://mayank-portfolio-seven.vercel.app/blog/${blog.id}`;
+
+    return {
+      title: `${blog.title} | Mayank Portfolio`,
+      description,
+      authors: [{ name: authorName }],
+      keywords: allKeywords.join(', '),
+      openGraph: {
+        title: blog.title,
+        description,
+        type: 'article',
+        url: blogUrl,
+        siteName: 'Mayank Portfolio',
+        publishedTime: blog.createdAt || blog.date,
+        modifiedTime: blog.updatedAt || blog.date,
+        authors: [authorName],
+        tags: allKeywords,
+        locale: 'en_US',
+        images: [
+          {
+            url: firstImage,
+            width: 1200,
+            height: 630,
+            alt: blog.title,
+          },
+        ],
+        section: primaryCategoryName,
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: blog.title,
+        description,
+        images: [firstImage],
+      },
+      alternates: {
+        canonical: blogUrl,
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          'max-image-preview': 'large',
+          'max-snippet': -1,
+        },
+      },
+      other: {
+        'article:author': authorName,
+        'article:section': primaryCategoryName,
+        'article:published_time': blog.createdAt || blog.date,
+        'article:modified_time': blog.updatedAt || blog.date,
+        'article:tag': allKeywords.join(', '),
+        'twitter:label1': 'Reading time',
+        'twitter:data1': `${readingTime} min read`,
+        'twitter:label2': 'Category',
+        'twitter:data2': primaryCategoryName,
+      },
     };
-
-    fetchBlog();
-  }, [params.id, toast]);
-
-  if (loading) {
-    return <BlogDetailSkeleton />;
+  } catch (error) {
+    // Fallback metadata if blog fetch fails
+    return {
+      title: 'Blog Post | Mayank Portfolio',
+      description: 'Read this blog post on Mayank Portfolio',
+    };
   }
-
-  if (!blog) {
-    return <div>Blog not found</div>;
-  }
-
-  return (
-    <HeadingProvider>
-      {/* Back Button */}
-      <Link href='/blog'>
-        <Button variant='ghost' className='mb-8 group'>
-          <ArrowLeft className='mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1' />
-          Back to Blogs
-        </Button>
-      </Link>
-
-      {/* Main Content */}
-      <div className='flex gap-8 justify-center'>
-        <div className='flex w-full flex-col gap-8 max-w-4xl'>
-          <BlogDetailHeader
-            title={blog.title}
-            author={blog.author}
-            views={blog.metadata.views}
-            categories={blog.categories}
-          />
-          <Card className='w-full dark:bg-slate-800/60 p-8 border-0'>
-            <ContentBlocks blocks={blog.content} />
-          </Card>
-        </div>
-
-        {/* Table of Contents */}
-        <div className='hidden lg:block w-[280px] relative'>
-          <div className='sticky top-[163px]'>
-            <aside className='overflow-y-auto max-h-[calc(100vh-120px)]'>
-              <TableOfContents content={blog.content} />
-            </aside>
-          </div>
-        </div>
-      </div>
-    </HeadingProvider>
-  );
 }
 
 /**
- * Content Blocks Component
- * Renders multiple content blocks with proper type handling
+ * Server component - handles data fetching and SEO
  */
-const ContentBlocks: React.FC<{ blocks: ContentBlock[] }> = ({ blocks }) => (
-  <div className='space-y-6'>
-    {blocks.map((block, idx) => (
-      <ContentBlockRenderer key={`${block.type}-${idx}`} block={block} />
-    ))}
-  </div>
-);
+export default async function BlogDetail({ params }: BlogDetailProps) {
+  try {
+    // Fetch blog data server-side
+    const response = await blogService.getBlog(params.id);
+    const blog = response.data as BlogPost;
 
-// Loading skeleton component
-const BlogDetailSkeleton = () => {
-  return (
-    <div className='container mx-auto px-4 py-8 animate-pulse'>
-      <div className='max-w-4xl mx-auto'>
-        <div className='h-8 bg-gray-200 rounded w-1/4 mb-4' />
-        <div className='h-12 bg-gray-200 rounded w-3/4 mb-6' />
-        <div className='space-y-4'>
-          {[1, 2, 3].map((i) => (
-            <div key={i} className='h-4 bg-gray-200 rounded w-full' />
-          ))}
+    // Calculate metrics for JSON-LD
+    const wordCount = calculateWordCount(blog.content || []);
+    const readingTime = calculateReadingTime(wordCount);
+    const description =
+      extractDescription(blog.content || []) || 'Read this blog post';
+    const firstImage =
+      extractFirstImage(blog.content || []) ||
+      'https://mayank-portfolio-seven.vercel.app/og-image.png';
+
+    const blogUrl = `https://mayank-portfolio-seven.vercel.app/blog/${blog.id}`;
+    const authorName = blog.author || 'Anonymous';
+    const primaryCategoryName =
+      blog.primaryCategory?.name || blog.categories?.[0]?.name || 'Blog';
+
+    // Generate keywords
+    const allKeywords = [
+      ...(blog.tags || []),
+      primaryCategoryName,
+      ...(blog.categories?.map((c) => c.name) || []),
+    ];
+
+    // Generate JSON-LD schemas
+    const blogPostingSchema = generateBlogPostingSchema({
+      title: blog.title,
+      description,
+      author: {
+        name: authorName,
+        email: 'mayanks365@gmail.com',
+      },
+      datePublished: blog.createdAt || blog.date,
+      dateModified: blog.updatedAt || blog.date,
+      image: firstImage,
+      keywords: allKeywords,
+      wordCount,
+      readingTime,
+      url: blogUrl,
+    });
+
+    const breadcrumbSchema = generateBreadcrumbSchema([
+      {
+        name: 'Home',
+        url: 'https://mayank-portfolio-seven.vercel.app',
+      },
+      {
+        name: 'Blog',
+        url: 'https://mayank-portfolio-seven.vercel.app/blog',
+      },
+      {
+        name: blog.title,
+        url: blogUrl,
+      },
+    ]);
+
+    const combinedSchema = combineSchemas(blogPostingSchema, breadcrumbSchema);
+
+    return (
+      <>
+        {/* JSON-LD Structured Data */}
+        <script
+          id="json-ld"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: safeJsonLdScript(combinedSchema),
+          }}
+        />
+
+        {/* Client component for interactive features */}
+        <BlogDetailClient blog={blog} readingTime={readingTime} />
+      </>
+    );
+  } catch (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Blog not found</h1>
+          <p className="text-gray-400">The blog post you're looking for doesn't exist.</p>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}

@@ -1,302 +1,330 @@
-// src/features/Blog/BlogViewer/components/ContentBlock/ListRenderer.tsx
+'use client';
 
-import React, { useCallback } from 'react';
-import { RoughNotation, RoughNotationGroup } from 'react-rough-notation';
-import { ListBlock, Annotation } from '@/types';
+import React, { useEffect, useState, useMemo } from 'react';
+import { ListBlock } from '@/types';
+import { RoughNotation } from 'react-rough-notation';
 
 interface ListRendererProps {
   block: ListBlock;
 }
 
-// const createMethodPattern = (methodName: string): RegExp => {
-//   // return new RegExp(`${methodName}\\(\\)`, 'g');
-//   return new RegExp(`\\b${methodName}\\b`, 'g');
-// };
-
-// const createMethodPattern = (methodName: string): RegExp => {
-//   // Escape special regex characters and create a pattern that matches the exact phrase
-//   const escapedPattern = methodName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-//   console.log('Pattern created:', escapedPattern); // Debug
-//   return new RegExp(escapedPattern, 'g');
-// };
-
-// const createMethodPattern = (methodName: string): RegExp => {
-//   // 1. Escape special regex characters
-//   const escapedPattern = methodName
-//     .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-//     // 2. Allow for flexible whitespace
-//     .replace(/\s+/g, '\\s+');
-
-//   // 3. Add word boundaries only for single words
-//   const isSingleWord = !methodName.includes(' ');
-//   const pattern = isSingleWord
-//     ? `\\b${escapedPattern}\\b` // Add word boundaries for single words
-//     : escapedPattern; // Use exact matching for phrases
-
-//   return new RegExp(pattern, 'g');
-// };
-
-const createMethodPattern = (methodName: string): RegExp => {
-  const escapedPattern = methodName
-    .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    .replace(/\s+/g, '\\s+');
-
-  const isSingleWord = !methodName.includes(' ');
-  const pattern = isSingleWord ? `\\b${escapedPattern}\\b` : escapedPattern;
-
-  return new RegExp(pattern, 'g');
-};
+interface AnnotationSegment {
+  text: string;
+  annotationId?: string;
+  type?: string;
+  color?: string;
+  show?: boolean;
+  brackets?: string[];
+}
 
 /**
- * Processes text to find annotation matches
- * Returns segments with their applicable annotations
- *
- * @param content - Text to process
- * @param annotations - Array of annotations to apply
+ * Enterprise-grade list renderer with per-item annotation support
+ * Each list item has its own annotation space (0-based positions)
  */
-const processTextSegments = (
-  content: string,
-  annotations: Annotation[]
-): Array<{
-  text: string;
-  start: number;
-  end: number;
-  annotations: Annotation[];
-}> => {
-  if (!annotations.length) {
-    return [{ text: content, start: 0, end: content.length, annotations: [] }];
-  }
+export const ListRenderer: React.FC<ListRendererProps> = ({
+  block
+}) => {
+  const { items, text, annotations = [], style = 'unordered' } = block.data;
+  const [isClient, setIsClient] = useState(false);
 
-  // 1. Create a mapping of positions to annotation changes
-  type AnnotationChange = {
-    position: number;
-    annotation: Annotation;
-    isStart: boolean;
-  };
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
-  const changes: AnnotationChange[] = [];
-
-  // 2. Find all annotation boundaries with context
-  annotations.forEach((annotation) => {
-    const regex = createMethodPattern(annotation.regex);
-    let match;
-
-    while ((match = regex.exec(content)) !== null) {
-      console.log('match ', match);
-      changes.push(
-        {
-          position: match.index,
-          annotation,
-          isStart: true,
-        },
-        {
-          position: match.index + match[0].length,
-          annotation,
-          isStart: false,
-        }
-      );
-    }
-  });
-  console.log('changes before  ', changes);
-
-  // 3. Sort changes by position and type (starts before ends)
-  changes.sort((a, b) => {
-    if (a.position !== b.position) return a.position - b.position;
-    return a.isStart ? -1 : 1; // Start changes come before end changes
-  });
-  console.log('changes after  ', changes);
-
-  // 4. Process segments with active annotations tracking
-  const segments: Array<{
-    text: string;
-    start: number;
-    end: number;
-    annotations: Annotation[];
-  }> = [];
-
-  let currentPosition = 0;
-  const activeAnnotations = new Set<Annotation>();
-
-  // Add start position if not already included
-  if (!changes.length || changes[0].position > 0) {
-    segments.push({
-      text: content.slice(0, changes[0]?.position || content.length),
-      start: 0,
-      end: changes[0]?.position || content.length,
-      annotations: [],
+  /**
+   * Group annotations by itemIndex for efficient lookup
+   * This is computed once and memoized
+   */
+  const annotationsByItem = useMemo(() => {
+    const grouped = new Map<number, typeof annotations>();
+    annotations.forEach(annotation => {
+      // Only process annotations with valid itemIndex
+      if (typeof annotation.itemIndex === 'number' && annotation.itemIndex >= 0) {
+        const itemAnnotations = grouped.get(annotation.itemIndex) || [];
+        itemAnnotations.push(annotation);
+        grouped.set(annotation.itemIndex, itemAnnotations);
+      }
     });
-  }
-  console.log('segments before ', segments);
 
-  // Process each change
-  for (let i = 0; i < changes.length; i++) {
-    const currentChange = changes[i];
-    const nextChange = changes[i + 1];
-    const nextPosition = nextChange?.position ?? content.length;
+    return grouped;
+  }, [annotations]);
 
-    // Update active annotations
-    if (currentChange.isStart) {
-      activeAnnotations.add(currentChange.annotation);
-    } else {
-      activeAnnotations.delete(currentChange.annotation);
+  /**
+   * Process a single item's text with its annotations
+   * Clean, single-responsibility function
+   */
+  const processItemWithAnnotations = (
+    itemText: string,
+    itemAnnotations: typeof annotations
+  ): AnnotationSegment[] => {
+    if (!itemAnnotations || itemAnnotations.length === 0) {
+      return [{ text: itemText }];
     }
 
-    // Create segment if there's text between this and next change
-    if (nextPosition > currentChange.position) {
+    // Sort annotations by start position to process in order
+    const sortedAnnotations = [...itemAnnotations].sort(
+      (a, b) => (a.startOffset || 0) - (b.startOffset || 0)
+    );
+
+    const segments: AnnotationSegment[] = [];
+    let lastIndex = 0;
+
+    sortedAnnotations.forEach(annotation => {
+      // Validate annotation has required position data
+      if (
+        typeof annotation.startOffset !== 'number' ||
+        typeof annotation.endOffset !== 'number' ||
+        annotation.startOffset < 0 ||
+        annotation.endOffset > itemText.length ||
+        annotation.startOffset >= annotation.endOffset
+      ) {
+        console.warn('Invalid annotation positions:', annotation);
+        return;
+      }
+
+      // Add text before annotation
+      if (lastIndex < annotation.startOffset) {
+        segments.push({
+          text: itemText.slice(lastIndex, annotation.startOffset)
+        });
+      }
+
+      // Add annotated segment
+      const annotatedText = itemText.slice(annotation.startOffset, annotation.endOffset);
+
+      // Handle black highlight color (use light blue for visibility)
+      const displayColor = annotation.type === 'highlight' && annotation.color === 'black'
+        ? 'rgba(181,216,238,0.53)'
+        : annotation.color;
+
       segments.push({
-        text: content.slice(currentChange.position, nextPosition),
-        start: currentChange.position,
-        end: nextPosition,
-        annotations: Array.from(activeAnnotations),
+        text: annotatedText,
+        annotationId: `item-${annotation.itemIndex}-${annotation.startOffset}-${annotation.endOffset}`,
+        type: annotation.type,
+        color: displayColor,
+        show: annotation.show !== false,
+        brackets: annotation.brackets
+      });
+
+      lastIndex = annotation.endOffset;
+    });
+
+    // Add remaining text after last annotation
+    if (lastIndex < itemText.length) {
+      segments.push({
+        text: itemText.slice(lastIndex)
       });
     }
-  }
-  return segments;
-};
 
-/**
- * ListRenderer Component
- *
- * Renders list blocks with:
- * - Ordered and unordered list support
- * - Text annotations for list items
- * - Custom list styles
- * - Nested annotations
- * - Accessibility support
- *
- * @param {ListRendererProps} props - The list block to render
- * @returns {JSX.Element} Rendered list with annotations
- */
-export const ListRenderer: React.FC<ListRendererProps> = ({ block }) => {
-  const { items, text, annotations = [], style = 'unordered' } = block.data;
+    return segments;
+  };
 
   /**
-   * Renders a text segment with its annotations
-   * Handles nested annotations recursively
+   * Render annotation segments with RoughNotation or plain HTML
    */
-  const renderAnnotatedSegment = useCallback(
-    (
-      segment: {
-        text: string;
-        annotations: Annotation[];
-      },
-      index: number
-    ): JSX.Element => {
-      const renderWithAnnotations = (
-        text: string,
-        annotations: Annotation[],
-        depth: number
-      ): JSX.Element => {
-        if (!annotations.length) {
-          return (
-            <React.Fragment key={`${index}-${depth}`}>{text}</React.Fragment>
-          );
-        }
+  const renderSegments = (segments: AnnotationSegment[]) => {
+    return segments.map((segment, index) => {
+      if (!segment.annotationId) {
+        return <React.Fragment key={index}>{segment.text}</React.Fragment>;
+      }
 
-        const [current, ...remaining] = annotations;
-
+      // Handle bold and code as plain HTML (not RoughNotation)
+      if (segment.type === 'bold') {
         return (
-          <RoughNotation
-            key={`${index}-${depth}`}
-            type={current.type == 'brackets' ? 'bracket' : current.type}
-            show={current.show}
-            color={
-              current.type === 'highlight' && current.color === 'black'
-                ? '#ee82ee61'
-                : current.color === 'black'
-                ? 'violet'
-                : 'currentColor'
-            }
-            brackets={current.brackets}
-            padding={4}
-          >
-            {renderWithAnnotations(text, remaining, depth + 1)}
-          </RoughNotation>
+          <strong key={segment.annotationId} className="font-bold">
+            {segment.text}
+          </strong>
         );
-      };
+      }
 
-      return renderWithAnnotations(segment.text, segment.annotations, 0);
-    },
-    []
-  );
+      if (segment.type === 'code') {
+        return (
+          <code key={segment.annotationId} className="px-1.5 py-0.5 bg-gray-800/50 text-purple-300 rounded text-sm font-mono">
+            {segment.text}
+          </code>
+        );
+      }
 
-  /**
-   * Renders a list item with its annotations
-   */
-  const renderListItem = useCallback(
-    (item: string, index: number): JSX.Element => {
-      const segments = processTextSegments(item, annotations);
-
+      // Other annotations use RoughNotation
       return (
-        <li key={index} className='my-2' data-testid={`list-item-${index}`}>
-          {segments.map((segment, segIndex) =>
-            renderAnnotatedSegment(segment, segIndex)
-          )}
-        </li>
+        <RoughNotation
+          key={segment.annotationId}
+          type={(segment.type === 'brackets' ? 'bracket' : segment.type) as any}
+          show={segment.show}
+          color={segment.color}
+          brackets={segment.brackets as any}
+          padding={4}
+          multiline={true}
+        >
+          {segment.text}
+        </RoughNotation>
       );
-    },
-    [annotations, processTextSegments, renderAnnotatedSegment]
-  );
+    });
+  };
 
   /**
-   * Renders the list header/description if provided
+   * Helper to get item text (handles both old and new format)
    */
-  const renderListHeader = useCallback(() => {
-    if (!text) return null;
+  const getItemText = (item: any): string => {
+    return typeof item === 'string' ? item : item.text;
+  };
 
-    const segments = processTextSegments(text, annotations);
+  /**
+   * Helper to get item children (supports two-level nesting)
+   */
+  const getItemChildren = (item: any): Array<{ text: string; children: string[] }> | string[] => {
+    return typeof item === 'object' && item.children ? item.children : [];
+  };
+
+  /**
+   * Helper to get item annotations (new format has annotations per item)
+   */
+  const getItemAnnotations = (item: any, index: number) => {
+    // New format: annotations are stored in the item itself
+    if (typeof item === 'object' && item.annotations && item.annotations.length > 0) {
+      return item.annotations;
+    }
+    // Old format: annotations are in the parent list with itemIndex
+    return annotationsByItem.get(index) || [];
+  };
+
+  /**
+   * Render list item with processed annotations
+   */
+  const renderListItem = (item: any, index: number) => {
+    const itemText = getItemText(item);
+    const children = getItemChildren(item);
+
+    if (!isClient) {
+      // SSR: Return plain text without annotations
+      return (
+        <>
+          {itemText}
+          {/* Nested bullet list for children (two-level nesting) */}
+          {children.length > 0 && (
+            <ul className='list-disc pl-6 space-y-1 mt-1'>
+              {children.map((child: any, childIndex: number) => {
+                // Handle both old format (string) and new format (object with text, children)
+                const childText = typeof child === 'string' ? child : child.text;
+                const grandchildren = typeof child === 'object' && child.children ? child.children : [];
+
+                return (
+                  <li key={childIndex} className='my-1'>
+                    {childText}
+                    {/* Grandchildren (second level nesting) */}
+                    {grandchildren.length > 0 && (
+                      <ul className='list-disc pl-6 space-y-1'>
+                        {grandchildren.map((grandchild: string, grandchildIndex: number) => (
+                          <li key={grandchildIndex} className='my-1'>
+                            {grandchild}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </>
+      );
+    }
+
+    // Get annotations for this specific item
+    const itemAnnotations = getItemAnnotations(item, index);
+
+    if (itemAnnotations.length === 0) {
+      return (
+        <>
+          {itemText}
+          {/* Nested bullet list for children (two-level nesting) */}
+          {children.length > 0 && (
+            <ul className='list-disc pl-6 space-y-1 mt-1'>
+              {children.map((child: any, childIndex: number) => {
+                // Handle both old format (string) and new format (object with text, children)
+                const childText = typeof child === 'string' ? child : child.text;
+                const grandchildren = typeof child === 'object' && child.children ? child.children : [];
+
+                return (
+                  <li key={childIndex} className='my-1'>
+                    {childText}
+                    {/* Grandchildren (second level nesting) */}
+                    {grandchildren.length > 0 && (
+                      <ul className='list-disc pl-6 space-y-1'>
+                        {grandchildren.map((grandchild: string, grandchildIndex: number) => (
+                          <li key={grandchildIndex} className='my-1'>
+                            {grandchild}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </>
+      );
+    }
+
+    // Client-side with annotations: process and render
+    const segments = processItemWithAnnotations(itemText, itemAnnotations);
 
     return (
-      <div className='mb-4'>
-        {segments.map((segment, index) =>
-          renderAnnotatedSegment(segment, index)
+      <>
+        {renderSegments(segments)}
+        {/* Nested bullet list for children (two-level nesting) */}
+        {children.length > 0 && (
+          <ul className='list-disc pl-6 space-y-1 mt-1'>
+            {children.map((child: any, childIndex: number) => {
+              // Handle both old format (string) and new format (object with text, children)
+              const childText = typeof child === 'string' ? child : child.text;
+              const grandchildren = typeof child === 'object' && child.children ? child.children : [];
+
+              return (
+                <li key={childIndex} className='my-1'>
+                  {childText}
+                  {/* Grandchildren (second level nesting) */}
+                  {grandchildren.length > 0 && (
+                    <ul className='list-disc pl-6 space-y-1'>
+                      {grandchildren.map((grandchild: string, grandchildIndex: number) => (
+                        <li key={grandchildIndex} className='my-1'>
+                          {grandchild}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         )}
-      </div>
+      </>
     );
-  }, [text, annotations, processTextSegments, renderAnnotatedSegment]);
+  };
 
   return (
     <div className='list-block my-6'>
-      {/* List description/header */}
-      {renderListHeader()}
-
       {/* Main list */}
-      <RoughNotationGroup show={true}>
-        {style === 'ordered' ? (
-          <ol className='list-decimal pl-6 space-y-2'>
-            {items.map((item, index) => renderListItem(item, index))}
-          </ol>
-        ) : (
-          <ul className='list-disc pl-6 space-y-2'>
-            {items.map((item, index) => renderListItem(item, index))}
-          </ul>
-        )}
-      </RoughNotationGroup>
+      {style === 'ordered' ? (
+        <ol className='list-decimal pl-6 space-y-2'>
+          {items.map((item, index) => (
+            <li key={index} className='my-2' data-testid={`list-item-${index}`}>
+              {renderListItem(item, index)}
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <ul className='list-disc pl-6 space-y-2'>
+          {items.map((item, index) => (
+            <li key={index} className='my-2' data-testid={`list-item-${index}`}>
+              {renderListItem(item, index)}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
 
 export default React.memo(ListRenderer);
-
-// Optional: CSS styles (can be moved to a separate file)
-const styles = `
-  .list-block {
-    /* Base styles */
-    @apply relative;
-
-    /* List item styles */
-    li {
-      @apply relative leading-relaxed;
-    }
-
-    /* Nested list styles */
-    ul ul, ol ol, ul ol, ol ul {
-      @apply mt-2 mb-2;
-    }
-
-    /* Animation styles */
-    .rough-annotation {
-      @apply transition-opacity duration-300;
-    }
-  }
-`;

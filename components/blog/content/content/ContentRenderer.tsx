@@ -9,6 +9,10 @@ import {
   isImageBlock,
   isListBlock,
   isParagraphBlock,
+  isBlockquoteBlock,
+  isHorizontalLineBlock,
+  isLinkBlock,
+  isTableBlock,
 } from '@/types';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -19,8 +23,12 @@ import { RoughNotationGroup } from 'react-rough-notation';
 import { ErrorBoundary } from '../ErrorBoundry';
 import CodeRenderer from '../blocks/codeRender';
 import { generateHeadingId } from '@/utils/heading';
-import { ListRenderer } from '../blocks/ListRendererStyled';
-import { ParagraphRenderer } from '../blocks/ParagraphRendererStyled';
+import { SmartListRenderer } from '../blocks/SmartListRenderer';
+import { SmartParagraphRenderer } from '../blocks/SmartParagraphRenderer';
+import { BlockquoteRenderer } from '../blocks/BlockquoteRenderer';
+import { HorizontalLineRenderer } from '../blocks/HorizontalLineRenderer';
+import { LinkRenderer } from '../blocks/LinkRenderer';
+import { TableRenderer } from '../blocks/TableRenderer';
 interface ContentBlockRendererProps {
   block: ContentBlock;
 }
@@ -60,7 +68,7 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
         // );
         return (
           <RoughNotationGroup show={true}>
-            <ParagraphRenderer block={processedBlock} />
+            <SmartParagraphRenderer block={processedBlock} />
           </RoughNotationGroup>
         );
       }
@@ -76,13 +84,29 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
       if (isListBlock(processedBlock)) {
         return (
           <RoughNotationGroup show={true}>
-            <ListRenderer block={processedBlock} />
+            <SmartListRenderer block={processedBlock} />
           </RoughNotationGroup>
         );
       }
 
       if (isCalloutBlock(processedBlock)) {
         return <CalloutRenderer block={processedBlock} />;
+      }
+
+      if (isBlockquoteBlock(processedBlock)) {
+        return <BlockquoteRenderer block={processedBlock} />;
+      }
+
+      if (isHorizontalLineBlock(processedBlock)) {
+        return <HorizontalLineRenderer block={processedBlock} />;
+      }
+
+      if (isLinkBlock(processedBlock)) {
+        return <LinkRenderer block={processedBlock} />;
+      }
+
+      if (isTableBlock(processedBlock)) {
+        return <TableRenderer block={processedBlock} />;
       }
 
       // Handle unknown block types

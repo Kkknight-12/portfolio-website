@@ -1,13 +1,18 @@
 // Core content block
 
 export interface ContentBlock {
+  id?: string; // Optional ID field for existing blocks
   type: ContentBlockType;
   data:
     | ParagraphBlockData
     | CodeBlockData
     | ImageBlockData
     | ListBlockData
-    | CalloutBlockData;
+    | CalloutBlockData
+    | BlockquoteBlockData
+    | HorizontalLineBlockData
+    | LinkBlockData
+    | TableBlockData;
   order: number;
 }
 
@@ -27,7 +32,11 @@ export type ContentBlockType =
   | 'code'
   | 'image'
   | 'list'
-  | 'callout';
+  | 'callout'
+  | 'blockquote'
+  | 'horizontalLine'
+  | 'link'
+  | 'table';
 
 // -----------------------------------------------------------------------------
 // Annotation
@@ -37,10 +46,16 @@ export interface Annotation {
   show: boolean;
   brackets: DirectionType[];
   regex: string;
+  // Position-based fields for accurate highlighting
+  text?: string; // The actual text that is annotated
+  startOffset?: number; // Starting position in the paragraph/list item
+  endOffset?: number; // Ending position in the paragraph/list item
+  occurrenceNumber?: number; // Which occurrence of the text (for duplicates)
+  itemIndex?: number; // For list annotations: which item (0-based) this annotation belongs to
 }
 
 export type DirectionType = 'top' | 'left' | 'right' | 'bottom';
-export type AnnotationType = 'underline' | 'circle' | 'highlight' | 'brackets';
+export type AnnotationType = 'underline' | 'circle' | 'highlight' | 'brackets' | 'bold' | 'code';
 export type ColorType = 'red' | 'black' | 'green' | 'yellow' | 'blue';
 
 // -----------------------------------------------------------------------------
@@ -66,11 +81,68 @@ export interface CalloutBlockData {
   text: string;
 }
 
+export interface NestedListItem {
+  text: string;
+  children: string[]; // Grandchildren (deepest level - strings only)
+}
+
+export interface ListItem {
+  text: string;
+  annotations: Annotation[];
+  children?: NestedListItem[] | string[]; // Two-level nesting: supports both old (string[]) and new (object[]) formats
+  _id?: string;
+}
+
 export interface ListBlockData {
-  items: string[];
+  items: ListItem[];
   annotations: Annotation[];
   text: string;
   style: 'unordered' | 'ordered';
+}
+
+export interface BlockquoteBlockData {
+  text: string;
+  citation?: string;
+}
+
+export interface HorizontalLineBlockData {
+  style?: 'solid' | 'dashed' | 'dotted';
+}
+
+export interface LinkBlockData {
+  url: string;
+  name: string;
+  openInNewTab?: boolean;
+}
+
+export interface TableCellContent {
+  text: string;
+  annotations: Annotation[];
+}
+
+export interface TableCell {
+  type: 'header' | 'cell';
+  colspan: number;
+  rowspan: number;
+  colwidth: number | null;
+  background: string | null;
+  content: TableCellContent;
+}
+
+export interface TableRow {
+  isHeader: boolean;
+  cells: TableCell[];
+}
+
+export interface TableMetadata {
+  totalRows: number;
+  totalColumns: number;
+  hasHeaderRow: boolean;
+}
+
+export interface TableBlockData {
+  rows: TableRow[];
+  metadata: TableMetadata;
 }
 
 // -----------------------------------------------------------------------------
@@ -186,6 +258,22 @@ export interface CalloutBlock extends BaseBlock {
   data: CalloutBlockData;
 }
 
+export interface BlockquoteBlock extends BaseBlock {
+  data: BlockquoteBlockData;
+}
+
+export interface HorizontalLineBlock extends BaseBlock {
+  data: HorizontalLineBlockData;
+}
+
+export interface LinkBlock extends BaseBlock {
+  data: LinkBlockData;
+}
+
+export interface TableBlock extends BaseBlock {
+  data: TableBlockData;
+}
+
 // -----------------------------------------------------------------------------
 // Type Guards
 export const isParagraphBlock = (
@@ -247,3 +335,27 @@ export function isCalloutData(
 ): content is { type: 'callout'; data: CalloutBlockData; order: number } {
   return content.type === 'callout';
 }
+
+export const isBlockquoteBlock = (
+  block: ContentBlock
+): block is ContentBlock & { data: BlockquoteBlockData } => {
+  return block.type === 'blockquote';
+};
+
+export const isHorizontalLineBlock = (
+  block: ContentBlock
+): block is ContentBlock & { data: HorizontalLineBlockData } => {
+  return block.type === 'horizontalLine';
+};
+
+export const isLinkBlock = (
+  block: ContentBlock
+): block is ContentBlock & { data: LinkBlockData } => {
+  return block.type === 'link';
+};
+
+export const isTableBlock = (
+  block: ContentBlock
+): block is ContentBlock & { data: TableBlockData } => {
+  return block.type === 'table';
+};
