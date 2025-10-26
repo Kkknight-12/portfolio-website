@@ -80,7 +80,9 @@ export const SimpleCodeBlock = ({
             <div
               className={cn(
                 'shiki-code-block overflow-x-auto',
-                'font-mono text-sm'
+                'max-h-[800px] overflow-y-auto',
+                'font-mono text-sm flex',
+                '[&_pre]:!h-full [&_pre]:!flex-grow'
               )}
               dangerouslySetInnerHTML={{ __html: highlightedCode }}
             />

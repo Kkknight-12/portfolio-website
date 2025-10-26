@@ -35,7 +35,10 @@ const SandboxBlock = memo(
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className='mt-4 border rounded-md overflow-hidden'>
+          <div
+            className='mt-4 border rounded-md overflow-hidden'
+            style={{ height: '500px' }}
+          >
             <iframe
               src={embedUrl}
               style={{
