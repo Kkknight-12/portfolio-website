@@ -54,6 +54,66 @@ export const Projects = [
   [
     {
       type: 'project',
+      title: 'Blog Platform with Rich Text Editor',
+      description:
+        'Full-stack blogging platform with advanced rich text ' +
+        'editing capabilities and custom annotation system. ' +
+        'Features overlapping highlights, nested lists, interactive code ' +
+        'blocks with Shiki syntax highlighting, and MongoDB schema with ' +
+        'Mongoose discriminators for polymorphic content blocks.',
+      website: 'https://devcanvas.vercel.app/',
+      github: '#', // Update with your GitHub repository URL
+      image: '/blog-platform.png', // Add your project image to public folder
+      placeholder: 'https://via.placeholder.com/150',
+      tags: ['Next.js', 'TipTap', 'MongoDB', 'Express', 'TypeScript'],
+    },
+    {
+      type: 'project',
+      title: 'Chrome Web Highlighter',
+      description:
+        'Production-ready Chrome extension with 10,000+ lines of enterprise-grade JavaScript. ' +
+        'Features Redux Toolkit for cross-tab state synchronization, Shadow DOM isolation (3,944 lines) ' +
+        'preventing CSS conflicts, comprehensive security with DOMPurify and CSP compliance. ' +
+        'Optimized with DOM batching using RequestAnimationFrame for sub-100ms operations with 1,000+ highlights. ' +
+        'Scalable architecture with 400+ error handlers ready for 100,000+ users.',
+      website: 'https://chromewebstore.google.com/detail/nhbljcnbbmmjdmaimlnpdfknlkojbjji?utm_source=item-share-cb',
+      github: '#', // Update with your GitHub repository URL
+      image: '/chrome-highlighter.png', // Add your project image to public folder
+      placeholder: 'https://via.placeholder.com/150',
+      tags: ['JavaScript', 'Chrome Manifest V3', 'Redux Toolkit', 'Shadow DOM', 'DOMPurify'],
+    },
+    {
+      type: 'project',
+      title: 'Admin Dashboard Template',
+      description:
+        'Modern, responsive admin dashboard template with advanced theme system featuring 8 pre-built color schemes (Emerald, Blue, Purple, Orange, Rose, Teal, Indigo, Pink). ' +
+        'Seamless dark mode with system preference detection, dynamic CSS variables, and persistent localStorage settings. ' +
+        'Built with React 19, Tailwind CSS v4, Vite, and 45+ shadcn/ui components (Radix UI primitives). ' +
+        'Features responsive mobile-first design, SEO optimization with meta tags and Open Graph, PWA-ready manifest, ' +
+        'performance optimization with code splitting, and WCAG compliant accessibility.',
+      website: 'https://admin-dashboard-template-knight.vercel.app/',
+      github: '#', // Update with your GitHub repository URL
+      image: '/admin-dashboard.png', // Add your project image to public folder
+      placeholder: 'https://via.placeholder.com/150',
+      tags: ['React 19', 'Tailwind CSS v4', 'Vite', 'Shadcn/UI', 'Radix UI', 'TypeScript'],
+    },
+    {
+      type: 'project',
+      title: 'React Theme System Kit',
+      description:
+        'Production-ready theme system solving 100+ hours of dark mode implementation pain. ' +
+        'Features 8 production-ready themes (beyond just light/dark), 45+ pre-themed shadcn/ui components, ' +
+        'and OKLCH color space for better consistency than RGB. Built with React 19 and Tailwind CSS v4. ' +
+        'Eliminates theme flashing, ensures consistent colors across components, and exports themes in any format. ' +
+        'Three weeks of development work, ready to use in five minutes.',
+      website: 'https://react-theme-system-kit.vercel.app/',
+      github: '#', // Update with your GitHub repository URL
+      image: '/theme-system-kit.png', // Add your project image to public folder
+      placeholder: 'https://via.placeholder.com/150',
+      tags: ['React', 'Tailwind CSS', 'OKLCH', 'Shadcn/UI', 'TypeScript'],
+    },
+    {
+      type: 'project',
       title: 'Editor Application',
       description:
         'This is a web editor which compiles your react' +
@@ -131,6 +191,8 @@ export const SKILLS_DATA = [
   'React',
   'Next.js',
   'Node.js',
+  'MongoDB',
+  'Express',
   'Git',
   'Tailwind',
   'Redux',
