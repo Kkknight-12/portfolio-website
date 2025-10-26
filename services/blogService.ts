@@ -20,11 +20,59 @@ export const blogService = {
     if (cached) return cached;
 
     const response = await api.get(`/blogs/${id}`);
-    
+    const rawBlog = response.data.data;
+
+    // Transform blog data to match expected structure
+    const categories = (rawBlog.categories || []).map((cat: any, index: number) => ({
+      _id: cat._id,
+      id: cat._id,
+      name: cat.name,
+      slug: cat.slug,
+      description: cat.description,
+      isActive: true,
+      order: index + 1,
+    }));
+
+    const primaryCategoryObj = categories.find(
+      (cat: any) => cat._id === rawBlog.primaryCategory
+    ) || categories[0] || {
+      _id: 'default',
+      id: 'default',
+      name: 'General',
+      slug: 'general',
+      isActive: true,
+      order: 1,
+    };
+
+    const authorName = rawBlog.author
+      ? `${rawBlog.author.firstName} ${rawBlog.author.lastName}`
+      : 'Anonymous';
+
+    const transformedBlog = {
+      _id: rawBlog.id,
+      id: rawBlog.id,
+      title: rawBlog.title,
+      author: authorName,
+      date: rawBlog.date || rawBlog.createdAt,
+      content: rawBlog.content || [],
+      categories,
+      primaryCategory: primaryCategoryObj,
+      status: rawBlog.status || 'published',
+      tags: rawBlog.tags || [],
+      metadata: rawBlog.metadata || { views: 0, likes: 0 },
+      createdAt: rawBlog.createdAt,
+      updatedAt: rawBlog.updatedAt,
+    };
+
+    const result = {
+      success: true,
+      data: transformedBlog,
+    };
+
     // Cache the response for 5 minutes
-    blogCache.set(cacheKey, response.data, 5 * 60 * 1000);
-    
-    return response.data;
+    blogCache.set(cacheKey, result, 5 * 60 * 1000);
+
+    return result;
   },
 
   /**
